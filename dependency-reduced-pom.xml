@@ -3,7 +3,7 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>com.syntaxphoenix.java</groupId>
   <artifactId>LoginPlus</artifactId>
-  <version>2.0.0</version>
+  <version>2.1.0</version>
   <build>
     <resources>
       <resource>
@@ -46,11 +46,19 @@
           <relocations>
             <relocation>
               <pattern>net.sourcewriters.minecraft.versionutils</pattern>
-              <shadedPattern>com.syntaxphoenix.realistic.shaded.versionutils</shadedPattern>
+              <shadedPattern>com.syntaxphoenix.loginplus.shaded.versionutils</shadedPattern>
             </relocation>
             <relocation>
               <pattern>com.google.gson</pattern>
-              <shadedPattern>com.syntaxphoenix.realistic.shaded.google.gson</shadedPattern>
+              <shadedPattern>com.syntaxphoenix.loginplus.shaded.google.gson</shadedPattern>
+            </relocation>
+            <relocation>
+              <pattern>de.mkammerer.argon2</pattern>
+              <shadedPattern>com.syntaxphoenix.loginplus.shaded.mkammerer.argon2</shadedPattern>
+            </relocation>
+            <relocation>
+              <pattern>at.favre.lib.crypto.bcrypt</pattern>
+              <shadedPattern>com.syntaxphoenix.loginplus.shaded.favre.lib.crypto.bcrypt</shadedPattern>
             </relocation>
           </relocations>
         </configuration>
@@ -80,7 +88,7 @@
       <artifactId>server</artifactId>
       <version>1</version>
       <scope>system</scope>
-      <systemPath>${project.basedir}/dependencies/Spigot1_8_R3.jar</systemPath>
+      <systemPath>${project.basedir}/dependencies/Spigot1.15.jar</systemPath>
       <exclusions>
         <exclusion>
           <artifactId>snakeyaml</artifactId>

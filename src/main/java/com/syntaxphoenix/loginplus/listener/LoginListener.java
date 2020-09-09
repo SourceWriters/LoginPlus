@@ -48,7 +48,7 @@ public class LoginListener implements Listener {
 						Account ao;
 						try {
 							ao = new Account(uuid, MYSQLMethods.getPassword(uuid), EncryptionType.valueOf(MYSQLMethods.getHashType(uuid)), MYSQLMethods.isPremium(uuid));
-							if(MYSQLMethods.isInMYSQLTable(uuid)) {
+							if (MYSQLMethods.isInMYSQLTable(uuid)) {
 								DataTranslator.accounts.put(uuid, ao);
 							}
 						} catch (SQLException e1) {

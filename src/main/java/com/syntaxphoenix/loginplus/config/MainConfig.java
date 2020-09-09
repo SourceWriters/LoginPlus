@@ -17,7 +17,7 @@ public class MainConfig {
 	
 	public static boolean timer_enabled = true;
 	public static int timer_time = 60;
-	public static EncryptionType type = EncryptionType.SHA512;
+	public static EncryptionType type = EncryptionType.ARGON_2;
 	public static int login_attempts = 3;
 	public static boolean reconnect_time_enabled = true;
 	public static int reconnect_time = 30;
@@ -30,6 +30,12 @@ public class MainConfig {
 	public static boolean captcha = false;
 	public static boolean captcha_on_login = true;
 	public static boolean captcha_on_register = true;
+	
+	public static int argon2Cores = 4;
+	public static int argon2Memory = 1024;
+	public static int argon2Parallelism = 8;
+	
+	public static int bcryptRounds = 14;
 	
 	
 	public static void load() {
@@ -49,6 +55,11 @@ public class MainConfig {
 		captcha = setObject("captcha.enabled", captcha);
 		captcha_on_login = setObject("captcha.login", captcha_on_login);
 		captcha_on_register = setObject("captcha.register", captcha_on_register);
+		
+		argon2Cores = setObject("encryption.argon2.cores", argon2Cores);
+		argon2Memory = setObject("encryption.argon2.memory", argon2Memory);
+		argon2Parallelism = setObject("encryption.argon2.parallelism", argon2Parallelism);
+		bcryptRounds = setObject("encryption.bcrypt.rounds", bcryptRounds);
 	}
 
 	public static int setObject(String path, int obj) {

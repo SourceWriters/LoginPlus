@@ -17,16 +17,16 @@ public class LoginPlus extends JavaPlugin {
 	}
 	
 	public void onDisable() {
-		for(Player all : PluginUtils.login) {
+		for (Player all : PluginUtils.login) {
 			all.kickPlayer("");
 		}
-		for(Player all : PluginUtils.register) {
+		for (Player all : PluginUtils.register) {
 			all.kickPlayer("");
 		}
-		for(Player all : PluginUtils.captcha) {
+		for (Player all : PluginUtils.captcha) {
 			all.kickPlayer("");
 		}
-		if(MYSQLConfig.enabled) {
+		if (MYSQLConfig.enabled) {
 			MYSQL.disconnect();
 		}
 	}

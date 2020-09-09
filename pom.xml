@@ -4,7 +4,7 @@
 
   <groupId>com.syntaxphoenix.java</groupId>
   <artifactId>LoginPlus</artifactId>
-  <version>2.0.0</version>
+  <version>2.1.0</version>
   <packaging>jar</packaging>
 
 	<repositories>
@@ -43,6 +43,17 @@
 					<artifactId>gson</artifactId>
 				</exclusion>
 			</exclusions>
+		</dependency>
+		
+		<dependency>
+		    <groupId>de.mkammerer</groupId>
+		    <artifactId>argon2-jvm</artifactId>
+		    <version>2.5</version>
+		</dependency>
+		<dependency>
+		    <groupId>at.favre.lib</groupId>
+		    <artifactId>bcrypt</artifactId>
+		    <version>0.9.0</version>
 		</dependency>
 	</dependencies>
 
@@ -89,11 +100,19 @@
 					<relocations>
 						<relocation>
 							<pattern>net.sourcewriters.minecraft.versionutils</pattern>
-							<shadedPattern>com.syntaxphoenix.realistic.shaded.versionutils</shadedPattern>
+							<shadedPattern>com.syntaxphoenix.loginplus.shaded.versionutils</shadedPattern>
 						</relocation>
 						<relocation>
 							<pattern>com.google.gson</pattern>
-							<shadedPattern>com.syntaxphoenix.realistic.shaded.google.gson</shadedPattern>
+							<shadedPattern>com.syntaxphoenix.loginplus.shaded.google.gson</shadedPattern>
+						</relocation>
+						<relocation>
+							<pattern>de.mkammerer.argon2</pattern>
+							<shadedPattern>com.syntaxphoenix.loginplus.shaded.mkammerer.argon2</shadedPattern>
+						</relocation>
+						<relocation>
+							<pattern>at.favre.lib.crypto.bcrypt</pattern>
+							<shadedPattern>com.syntaxphoenix.loginplus.shaded.favre.lib.crypto.bcrypt</shadedPattern>
 						</relocation>
 					</relocations>
 				</configuration>

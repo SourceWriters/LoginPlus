@@ -25,11 +25,11 @@ public class ChatListener implements Listener {
 		Player p = e.getPlayer();
 		String uuid = p.getUniqueId().toString();
 		
-		if(PluginUtils.login.contains(p)) {
+		if (PluginUtils.login.contains(p)) {
 			e.setCancelled(true);
 			String password = e.getMessage();
 			EncryptionType type = PasswordConfig.getHashtype(p.getUniqueId().toString());
-			if(EncryptionUtils.hashPassword(password, type).equalsIgnoreCase(DataTranslator.getAccountData(uuid).getPassword())) {
+			if (EncryptionUtils.verifyPassword(password, type, DataTranslator.getAccountData(uuid).getPassword())) {
 				PluginUtils.login.remove(p);
 				PluginUtils.timer.remove(p);
 				try {
@@ -58,10 +58,10 @@ public class ChatListener implements Listener {
 					}
 				}
 			}
-		} else if(PluginUtils.register.contains(p)) {
+		} else if (PluginUtils.register.contains(p)) {
 			e.setCancelled(true);
 			String password = e.getMessage();
-			Account ao = new Account(uuid, "password", EncryptionType.SHA512, false);
+			Account ao = new Account(uuid, "password", MainConfig.type, false);
 			DataTranslator.accounts.put(uuid, ao);
 			DataTranslator.setPassword(uuid, EncryptionUtils.hashPassword(password, MainConfig.type), MainConfig.type.toString());
 			try {
