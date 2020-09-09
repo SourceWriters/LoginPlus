@@ -1,0 +1,9 @@
+/bin/
+/target/
+/.settings/
+/.idea/
+/.m2/
+/.classpath
+/.project
+/.gitlab-ci.yml
+/test/
