@@ -13,7 +13,7 @@ import com.syntaxphoenix.loginplus.utils.PluginUtils;
 
 public class InventoryClearListener implements Listener {
 	
-	@EventHandler(priority=EventPriority.HIGHEST)
+	@EventHandler(priority=EventPriority.LOWEST)
 	public void on(PlayerJoinEvent event) {
 		Player player = event.getPlayer();
 		if (PluginUtils.login.contains(player) || PluginUtils.register.contains(player) || PluginUtils.captcha.contains(player)) {
