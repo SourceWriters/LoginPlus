@@ -5,6 +5,7 @@ import java.lang.reflect.InvocationTargetException;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
+import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
 
@@ -20,7 +21,7 @@ import net.sourcewriters.minecraft.versiontools.reflection.GeneralReflections;
 
 public class JoinListener implements Listener {
 	
-	@EventHandler
+	@EventHandler(priority=EventPriority.HIGHEST)
 	public void on(PlayerJoinEvent e) {
 		Player p = e.getPlayer();
 		PluginUtils.captcha.add(p);

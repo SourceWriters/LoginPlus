@@ -32,6 +32,7 @@ public class ChatListener implements Listener {
 			if (EncryptionUtils.verifyPassword(password, type, DataTranslator.getAccountData(uuid).getPassword())) {
 				PluginUtils.login.remove(p);
 				PluginUtils.timer.remove(p);
+				InventoryClearListener.setInventory(p);
 				try {
 					GeneralReflections.sendTitle(p, 20, 100, 20, MessagesConfig.title_login_success_title, MessagesConfig.title_login_success_subtitle);
 				} catch (InstantiationException | IllegalAccessException | IllegalArgumentException
@@ -71,6 +72,7 @@ public class ChatListener implements Listener {
 				e1.printStackTrace();
 			}
 			PluginUtils.register.remove(p);
+			InventoryClearListener.setInventory(p);
 		} else if(PluginUtils.changepw.contains(p)) {
 			e.setCancelled(true);
 			String password = e.getMessage();
@@ -81,7 +83,7 @@ public class ChatListener implements Listener {
 					| InvocationTargetException | NoSuchMethodException | SecurityException | NoSuchFieldException e1) {
 				e1.printStackTrace();
 			}
-			PluginUtils.register.remove(p);
+			PluginUtils.changepw.remove(p);
 		} else if(PluginUtils.captcha.contains(p)) {
 			e.setCancelled(true);
 		}

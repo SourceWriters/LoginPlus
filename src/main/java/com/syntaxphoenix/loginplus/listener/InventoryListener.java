@@ -6,6 +6,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.DyeColor;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
+import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryCloseEvent;
@@ -25,7 +26,7 @@ import net.sourcewriters.minecraft.versiontools.reflection.GeneralReflections;
 
 public class InventoryListener implements Listener {
 	
-	@EventHandler
+	@EventHandler(priority=EventPriority.HIGHEST)
 	public void on(InventoryClickEvent e) {
 		Player p = (Player) e.getWhoClicked();
 		if(PluginUtils.login.contains(p) || PluginUtils.register.contains(p) || PluginUtils.captcha.contains(p)) {
@@ -101,7 +102,7 @@ public class InventoryListener implements Listener {
 		}
 	}
 	
-	@EventHandler
+	@EventHandler(priority=EventPriority.HIGHEST)
 	public void on(PlayerPickupItemEvent e) {
 		Player p = (Player) e.getPlayer();
 		if(PluginUtils.login.contains(p) || PluginUtils.register.contains(p) || PluginUtils.captcha.contains(p)) {
@@ -109,7 +110,7 @@ public class InventoryListener implements Listener {
 		}
 	}
 	
-	@EventHandler
+	@EventHandler(priority=EventPriority.HIGHEST)
 	public void on(PlayerDropItemEvent e) {
 		Player p = (Player) e.getPlayer();
 		if(PluginUtils.login.contains(p) || PluginUtils.register.contains(p) || PluginUtils.captcha.contains(p)) {

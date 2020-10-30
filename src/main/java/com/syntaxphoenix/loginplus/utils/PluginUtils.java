@@ -9,6 +9,7 @@ import java.util.List;
 import org.bukkit.Bukkit;
 import org.bukkit.command.ConsoleCommandSender;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.Inventory;
 import org.bukkit.plugin.PluginManager;
 
 import com.syntaxphoenix.loginplus.LoginPlus;
@@ -23,7 +24,9 @@ import com.syntaxphoenix.loginplus.encryption.EncryptionType;
 import com.syntaxphoenix.loginplus.listener.BlockListener;
 import com.syntaxphoenix.loginplus.listener.ChatListener;
 import com.syntaxphoenix.loginplus.listener.CommandListener;
+import com.syntaxphoenix.loginplus.listener.DamageListener;
 import com.syntaxphoenix.loginplus.listener.InteractListener;
+import com.syntaxphoenix.loginplus.listener.InventoryClearListener;
 import com.syntaxphoenix.loginplus.listener.InventoryListener;
 import com.syntaxphoenix.loginplus.listener.JoinListener;
 import com.syntaxphoenix.loginplus.listener.LoginListener;
@@ -42,6 +45,7 @@ public class PluginUtils {
 	public static HashMap<Player, Integer> timer = new HashMap<Player, Integer>();
 	public static HashMap<String, Integer> banned_ips = new HashMap<String, Integer>();
 	public static HashMap<Player, Integer> attempts = new HashMap<Player, Integer>();
+	public static HashMap<Player, Inventory> inventories = new HashMap<Player, Inventory>();
 	public static int timer_c;
 	public static String version = "";
 	
@@ -90,6 +94,8 @@ public class PluginUtils {
 		pm.registerEvents(new CommandListener(), LoginPlus.m);
 		pm.registerEvents(new InteractListener(), LoginPlus.m);
 		pm.registerEvents(new InventoryListener(), LoginPlus.m);
+		pm.registerEvents(new InventoryClearListener(), LoginPlus.m);
+		pm.registerEvents(new DamageListener(), LoginPlus.m);
 	}
 	
 	public static void loadPlayerData() {
