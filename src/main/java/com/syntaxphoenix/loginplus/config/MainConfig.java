@@ -27,6 +27,8 @@ public class MainConfig {
 	public static boolean login_failed_commands_enabled = false;
 	public static List<String> login_failed_commands = new ArrayList<String>();
 	
+	public static int titleTime = 5;
+	
 	public static boolean captcha = false;
 	public static boolean captcha_on_login = true;
 	public static boolean captcha_on_register = true;
@@ -55,6 +57,8 @@ public class MainConfig {
 		captcha = setObject("captcha.enabled", captcha);
 		captcha_on_login = setObject("captcha.login", captcha_on_login);
 		captcha_on_register = setObject("captcha.register", captcha_on_register);
+		
+		titleTime = setObject("title.time", titleTime);
 		
 		argon2Cores = setObject("encryption.argon2.cores", argon2Cores);
 		argon2Memory = setObject("encryption.argon2.memory", argon2Memory);

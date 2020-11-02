@@ -1,5 +1,5 @@
 name: LoginPlus
-version : 2.1.2
+version : 2.2.0
 author: SyntaxPhoenix IT-Solutions
 main: com.syntaxphoenix.loginplus.LoginPlus
 load: startup

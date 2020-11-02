@@ -34,7 +34,7 @@ public class ChatListener implements Listener {
 				PluginUtils.timer.remove(p);
 				InventoryClearListener.setInventory(p);
 				try {
-					GeneralReflections.sendTitle(p, 20, 100, 20, MessagesConfig.title_login_success_title, MessagesConfig.title_login_success_subtitle);
+					GeneralReflections.sendTitle(p, 20, MainConfig.titleTime * 20, 20, MessagesConfig.title_login_success_title, MessagesConfig.title_login_success_subtitle);
 				} catch (InstantiationException | IllegalAccessException | IllegalArgumentException
 						| InvocationTargetException | NoSuchMethodException | SecurityException
 						| NoSuchFieldException e1) {
@@ -51,7 +51,7 @@ public class ChatListener implements Listener {
 					}
 				} else {
 					try {
-						GeneralReflections.sendTitle(p, 20, 100, 20, MessagesConfig.title_login_failed_title, MessagesConfig.title_login_failed_subtitle.replace("%Attempts%", PluginUtils.attempts.get(p) + ""));
+						GeneralReflections.sendTitle(p, 20, MainConfig.titleTime * 20, 20, MessagesConfig.title_login_failed_title, MessagesConfig.title_login_failed_subtitle.replace("%Attempts%", PluginUtils.attempts.get(p) + ""));
 					} catch (InstantiationException | IllegalAccessException | IllegalArgumentException
 							| InvocationTargetException | NoSuchMethodException | SecurityException
 							| NoSuchFieldException e1) {
@@ -66,7 +66,7 @@ public class ChatListener implements Listener {
 			DataTranslator.accounts.put(uuid, ao);
 			DataTranslator.setPassword(uuid, EncryptionUtils.hashPassword(password, MainConfig.type), MainConfig.type.toString());
 			try {
-				GeneralReflections.sendTitle(p, 20, 100, 20, MessagesConfig.title_register_success_title, MessagesConfig.title_register_success_subtitle);
+				GeneralReflections.sendTitle(p, 20, MainConfig.titleTime * 20, 20, MessagesConfig.title_register_success_title, MessagesConfig.title_register_success_subtitle);
 			} catch (InstantiationException | IllegalAccessException | IllegalArgumentException
 					| InvocationTargetException | NoSuchMethodException | SecurityException | NoSuchFieldException e1) {
 				e1.printStackTrace();
@@ -78,7 +78,7 @@ public class ChatListener implements Listener {
 			String password = e.getMessage();
 			DataTranslator.setPassword(uuid, EncryptionUtils.hashPassword(password, MainConfig.type), MainConfig.type.toString());
 			try {
-				GeneralReflections.sendTitle(p, 20, 100, 20, MessagesConfig.title_changepw_success_title, MessagesConfig.title_changepw_success_subtitle);
+				GeneralReflections.sendTitle(p, 20, MainConfig.titleTime * 20, 20, MessagesConfig.title_changepw_success_title, MessagesConfig.title_changepw_success_subtitle);
 			} catch (InstantiationException | IllegalAccessException | IllegalArgumentException
 					| InvocationTargetException | NoSuchMethodException | SecurityException | NoSuchFieldException e1) {
 				e1.printStackTrace();
