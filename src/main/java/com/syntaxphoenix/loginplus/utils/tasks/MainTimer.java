@@ -10,7 +10,6 @@ import org.bukkit.scheduler.BukkitRunnable;
 
 import com.syntaxphoenix.loginplus.config.MainConfig;
 import com.syntaxphoenix.loginplus.config.MessagesConfig;
-import com.syntaxphoenix.loginplus.utils.CaptchaUtils;
 
 public class MainTimer extends BukkitRunnable {
 	
@@ -18,7 +17,6 @@ public class MainTimer extends BukkitRunnable {
 	private List<Player> timerRemove;
 	private HashMap<Player, Integer> timer;
 	private HashMap<String, Integer> bannedIps;
-	private List<Player> openInventory;
 	
 	private MainConfig config;
 	
@@ -28,18 +26,12 @@ public class MainTimer extends BukkitRunnable {
 		this.bannedIps = new HashMap<String, Integer>();
 		this.timerRemove = new ArrayList<Player>();
 		this.timer = new HashMap<Player, Integer>();
-		this.openInventory = new ArrayList<Player>();
 		
 		this.config = config;
 	}
 
 	@Override
-	public void run() {
-		for (Player all : openInventory) {
-			all.openInventory(CaptchaUtils.createCaptchaInventory(all));
-		}
-		openInventory.clear();
-		
+	public void run() {	
 		for (Player all : timer.keySet()) {
 			timer.put(all, timer.get(all)+1);
 			if(timer.get(all) > config.getTimerTime()) {
@@ -96,10 +88,6 @@ public class MainTimer extends BukkitRunnable {
 	
 	public int getRemainingbanTime(String ip) {
 		return this.bannedIps.containsKey(ip) ? this.bannedIps.get(ip) : 0;
-	}
-	
-	public void addOpenInventory(Player player) {
-		this.openInventory.add(player);
 	}
 
 }

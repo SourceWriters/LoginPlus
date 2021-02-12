@@ -42,7 +42,6 @@ public class LoginListener implements Listener {
 		}
 		String username = event.getPlayer().getName();
 		
-		AccountLoadingThread thread = new AccountLoadingThread(pluginUtils, username);
-		thread.start();
+		new AccountLoadingThread(pluginUtils, username).start();
 	}
 }

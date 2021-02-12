@@ -16,7 +16,7 @@ import com.syntaxphoenix.loginplus.utils.PluginUtils;
 
 import net.sourcewriters.minecraft.versiontools.reflection.GeneralReflections;
 
-public class LoginCallback extends Thread {
+public class LoginCallback {
 	
 	private PluginUtils pluginUtils;
 	private Player player;
@@ -28,7 +28,7 @@ public class LoginCallback extends Thread {
 		this.checkCaptcha = checkCaptcha;
 	}
 	
-	public void run() {
+	public void handleLogin() {
 		MainConfig config = pluginUtils.getConfig();
 		Optional<Account> account = this.pluginUtils.getAccountManager().getLocalAccount(player.getName());
 		if (account.isPresent()) {
@@ -74,13 +74,22 @@ public class LoginCallback extends Thread {
 	}
 	
 	private void openCaptchaMenu() {
-		Bukkit.getScheduler().scheduleSyncDelayedTask(LoginPlus.getInstance(), new Runnable() {
+		pluginUtils.getUserHandler().setStatus(player, Status.CAPTCHA);
+		Bukkit.getScheduler().runTaskAsynchronously(LoginPlus.getInstance(), new Runnable() {
 			@Override
 			public void run() {
-				pluginUtils.getUserHandler().setStatus(player, Status.CAPTCHA);
-				CaptchaUtils.openInventory(player);
-			}		
-		}, 1);
+				Bukkit.getScheduler().runTaskLater(LoginPlus.getInstance(), new Runnable() {
+					@Override
+					public void run() {
+						CaptchaUtils.openInventory(player);
+					}	
+				}, 10);
+			}	
+		});
+		if (!Bukkit.isPrimaryThread()) {
+			Bukkit.broadcastMessage("Du dulli nutzt den falschen Thread");
+		}
+		Bukkit.broadcastMessage("Fuck my life");
 	}
 
 }

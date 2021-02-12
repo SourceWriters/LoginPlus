@@ -20,16 +20,18 @@ public class LoginManager {
 	
 	public void loginUser(Player player, boolean checkCaptcha) {
 		LoginCallback loginCallback = new LoginCallback(this.pluginUtils, player, checkCaptcha);	
+		System.out.println("Creating callback");
 		if (this.pluginUtils.getAccountManager().isLocalAccountLoaded(player.getName())) {
-			loginCallback.start();
+			loginCallback.handleLogin();
 		} else {
 			this.callbacks.put(player.getName(), loginCallback);
 		}
 	}
 	
 	public void callbackUser(String username) {
+		System.out.println("Calling back on user" + username);
 		if (this.callbacks.containsKey(username)) {
-			this.callbacks.get(username).start();
+			this.callbacks.get(username).handleLogin();
 			this.callbacks.remove(username);
 		}
 	}

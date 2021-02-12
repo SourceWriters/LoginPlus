@@ -1,32 +1,25 @@
-package com.syntaxphoenix.loginplus.accounts.manager;
+package com.syntaxphoenix.loginplus.accounts.database;
 
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
-import java.util.HashMap;
 import java.util.Optional;
 
+import com.syntaxphoenix.loginplus.LoginPlus;
 import com.syntaxphoenix.loginplus.accounts.Account;
+import com.syntaxphoenix.loginplus.accounts.tasks.SyncSetLocalAccount;
 import com.syntaxphoenix.loginplus.encryption.EncryptionType;
 import com.syntaxphoenix.loginplus.mysql.Mysql;
-import com.syntaxphoenix.loginplus.utils.PluginUtils;
 
-public class MysqlAccountManager implements AccountManager {
+public class MysqlAccountDatabase implements AccountDatabase {
 	
 	private Mysql mysql;
-	private HashMap<String, Optional<Account>> accounts;
-	private PluginUtils pluginUtils;
 	
-	public MysqlAccountManager(Mysql mysql, PluginUtils pluginUtils) {
+	public MysqlAccountDatabase(Mysql mysql) {
 		this.mysql = mysql;
-		this.accounts = new HashMap<String, Optional<Account>>();
-		this.pluginUtils = pluginUtils;
 	}
 
 	@Override
 	public boolean hasAccount(String username) throws Exception {
-		if (this.accounts.containsKey(username) && this.accounts.get(username).isPresent()) {
-			return true;
-		}
 		PreparedStatement statement = this.mysql.getConnection().prepareStatement(
 			"SELECT * FROM `accounts` WHERE `username`= ?"
 		);
@@ -42,9 +35,7 @@ public class MysqlAccountManager implements AccountManager {
 	}
 
 	@Override
-	public void createAccount(Account account) throws Exception {
-		this.loadAccount(account.getUsername(), Optional.ofNullable(account));
-		
+	public void createAccount(Account account) throws Exception {	
 		PreparedStatement statement = this.mysql.getConnection().prepareStatement(
 			"INSERT INTO `accounts`(`username`,`hash`,`type`,`premium`) VALUES (?,?,?,?)"
 		);
@@ -53,11 +44,12 @@ public class MysqlAccountManager implements AccountManager {
 		statement.setString(3, account.getType().toString());
 		statement.setBoolean(4, account.isPremium());
 		statement.execute();
+		
+		new SyncSetLocalAccount(account.getUsername(), Optional.of(account)).runTaskLater(LoginPlus.getInstance(), 1);	
 	}
 
 	@Override
 	public void updateAccount(Account account) throws Exception {
-		this.accounts.put(account.getUsername(), Optional.ofNullable(account));
 		PreparedStatement statement = this.mysql.getConnection().prepareStatement(
 			"UPDATE `accounts` SET `hash` = ?, `type` = ?, `premium` = ? WHERE `username` = ?"
 		);
@@ -66,13 +58,12 @@ public class MysqlAccountManager implements AccountManager {
 		statement.setBoolean(3, account.isPremium());
 		statement.setString(4, account.getUsername());
 		statement.execute();
+		
+		new SyncSetLocalAccount(account.getUsername(), Optional.of(account)).runTaskLater(LoginPlus.getInstance(), 1);	
 	}
 
 	@Override
 	public Optional<Account> getAccount(String username) throws Exception {
-		if (this.accounts.containsKey(username) && this.accounts.get(username).isPresent()) {
-			return this.accounts.get(username);
-		}
 		Account account = null;
 		PreparedStatement statement = this.mysql.getConnection().prepareStatement(
 			"SELECT * FROM `accounts` WHERE `username`= ?"
@@ -88,32 +79,8 @@ public class MysqlAccountManager implements AccountManager {
 				account = new Account(username, hash, type, premium);
 			}
 		}
-		this.loadAccount(username, Optional.ofNullable(account));
+		new SyncSetLocalAccount(username, Optional.ofNullable(account)).runTaskLater(LoginPlus.getInstance(), 1);
 		return Optional.ofNullable(account);
-	}
-
-	@Override
-	public void clearLocalAccount(String username) {
-		this.accounts.remove(username);
-	}
-
-	@Override
-	public boolean isLocalAccountLoaded(String username) {
-		// TODO Auto-generated method stub
-		return false;
-	}
-
-	@Override
-	public Optional<Account> getLocalAccount(String username) {
-		if (this.accounts.containsKey(username)) {
-			return this.accounts.get(username);
-		}
-		return Optional.ofNullable(null);
-	}
-	
-	private void loadAccount(String username, Optional<Account> account) {
-		this.accounts.put(username, account);
-		this.pluginUtils.getLoginManager().callbackUser(username);
 	}
 
 }

@@ -45,27 +45,29 @@ public class ChangePasswordCallback extends BukkitRunnable implements Encryption
 	public void encryptCallback(String hash) {
 		Optional<Account> account;
 		try {
-			account = this.pluginUtils.getAccountManager().getAccount(player.getName());
-			if (account.isPresent()) {
-				account.get().setType(type);
-				account.get().setHash(hash);
-				this.pluginUtils.getAccountManager().updateAccount(account.get());
-				
-				try {
-					GeneralReflections.sendTitle(
-						player,
-						20,
-						this.pluginUtils.getConfig().getTitleTime() * 20,
-						20,
-						MessagesConfig.title_changepw_success_title,
-						MessagesConfig.title_changepw_success_subtitle
-					);
-				} catch (InstantiationException | IllegalAccessException | IllegalArgumentException
-						| InvocationTargetException | NoSuchMethodException | SecurityException | NoSuchFieldException e1) {
-					e1.printStackTrace();
-				}
-				this.pluginUtils.getUserHandler().removeStatus(player);
+			account = this.pluginUtils.getAccountManager().getLocalAccount(player.getName());
+			if (!account.isPresent()) {
+				account = this.pluginUtils.createAccountDatabase().getAccount(player.getName());
 			}
+			
+			account.get().setType(type);
+			account.get().setHash(hash);
+			this.pluginUtils.createAccountDatabase().updateAccount(account.get());
+			
+			try {
+				GeneralReflections.sendTitle(
+					player,
+					20,
+					this.pluginUtils.getConfig().getTitleTime() * 20,
+					20,
+					MessagesConfig.title_changepw_success_title,
+					MessagesConfig.title_changepw_success_subtitle
+				);
+			} catch (InstantiationException | IllegalAccessException | IllegalArgumentException
+					| InvocationTargetException | NoSuchMethodException | SecurityException | NoSuchFieldException e1) {
+				e1.printStackTrace();
+			}
+			this.pluginUtils.getUserHandler().removeStatus(player);
 		} catch (Exception exception) {
 			// TODO: Proper handling here
 			exception.printStackTrace();

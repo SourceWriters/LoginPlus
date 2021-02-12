@@ -19,6 +19,10 @@ public class LoginPlus extends JavaPlugin {
 		this.pluginUtils.disable();
 	}
 	
+	public PluginUtils getPluginUtils() {
+		return this.pluginUtils;
+	}
+	
 	public static LoginPlus getInstance() {
 		return instance;
 	}

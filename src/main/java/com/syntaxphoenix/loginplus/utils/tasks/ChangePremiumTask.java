@@ -23,9 +23,9 @@ public class ChangePremiumTask extends BukkitRunnable {
 	@Override
 	public void run() {
 		try {
-			Optional<Account> accountOptional = pluginUtils.getAccountManager().getAccount(player.getName());
+			Optional<Account> accountOptional = pluginUtils.getAccountManager().getLocalAccount(player.getName());
 			if (!accountOptional.isPresent()) {
-				// TODO: Send info account not present
+				accountOptional = pluginUtils.createAccountDatabase().getAccount(player.getName());
 				return;
 			}
 			Account account = accountOptional.get();
@@ -35,7 +35,7 @@ public class ChangePremiumTask extends BukkitRunnable {
 				player.sendMessage(MessagesConfig.prefix + MessagesConfig.no_premium);
 			}
 			account.setPremium(!account.isPremium());
-			pluginUtils.getAccountManager().updateAccount(account);
+			pluginUtils.createAccountDatabase().updateAccount(account);
 		} catch (Exception exception) {
 			// TODO: Proper message here
 			exception.printStackTrace();

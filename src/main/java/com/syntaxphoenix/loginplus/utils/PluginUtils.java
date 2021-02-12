@@ -11,9 +11,10 @@ import org.bukkit.inventory.Inventory;
 import org.bukkit.plugin.PluginManager;
 
 import com.syntaxphoenix.loginplus.LoginPlus;
+import com.syntaxphoenix.loginplus.accounts.database.AccountDatabase;
+import com.syntaxphoenix.loginplus.accounts.database.ConfigAccountDatabase;
+import com.syntaxphoenix.loginplus.accounts.database.MysqlAccountDatabase;
 import com.syntaxphoenix.loginplus.accounts.manager.AccountManager;
-import com.syntaxphoenix.loginplus.accounts.manager.ConfigAccountManager;
-import com.syntaxphoenix.loginplus.accounts.manager.MysqlAccountManager;
 import com.syntaxphoenix.loginplus.commands.ChangePasswordCommand;
 import com.syntaxphoenix.loginplus.config.MysqlConfig;
 import com.syntaxphoenix.loginplus.config.MainConfig;
@@ -67,7 +68,7 @@ public class PluginUtils {
 		
 		loadConfigs();
 		loadMysql();
-		this.accountManager = this.loadAccountManager();
+		this.accountManager = new AccountManager(this);
 		this.userHandler = new UserHandler();
 		this.encryptionManager = new EncryptionManager(config);
 		this.loginManager = new LoginManager(this);
@@ -122,6 +123,13 @@ public class PluginUtils {
 		return this.config;
 	}
 	
+	public AccountDatabase createAccountDatabase() {
+		if (this.mysqlConfig.isEnabled()) {
+			return new MysqlAccountDatabase(this.mysql);
+		}
+		return new ConfigAccountDatabase();
+	}
+	
 	private void loadTimer() {
 		this.timer = new MainTimer(this.config);
 		this.timer.runTaskTimer(LoginPlus.getInstance(), 15, 20);
@@ -170,12 +178,5 @@ public class PluginUtils {
 		this.config = new MainConfig();
 		this.mysqlConfig = new MysqlConfig();
 		MessagesConfig.load();
-	}
-	
-	private AccountManager loadAccountManager() {
-		if (this.mysqlConfig.isEnabled()) {
-			return new MysqlAccountManager(this.mysql, this);
-		}
-		return new ConfigAccountManager(this);
 	}
 }

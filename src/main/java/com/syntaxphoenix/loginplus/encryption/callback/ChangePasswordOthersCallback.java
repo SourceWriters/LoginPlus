@@ -45,14 +45,15 @@ public class ChangePasswordOthersCallback extends BukkitRunnable implements Encr
 	public void encryptCallback(String hash) {
 		Optional<Account> account;
 		try {
-			account = this.pluginUtils.getAccountManager().getAccount(player.getName());
+			account = this.pluginUtils.getAccountManager().getLocalAccount(player.getName());
 			if (account.isPresent()) {
-				account.get().setType(type);
-				account.get().setHash(hash);
-				this.pluginUtils.getAccountManager().updateAccount(account.get());
-				
-				this.sender.sendMessage(MessagesConfig.prefix + "The account has been updated");
+				account = this.pluginUtils.createAccountDatabase().getAccount(player.getName());
 			}
+			account.get().setType(type);
+			account.get().setHash(hash);
+			this.pluginUtils.createAccountDatabase().updateAccount(account.get());
+			
+			this.sender.sendMessage(MessagesConfig.prefix + "The account has been updated");
 		} catch (Exception exception) {
 			// TODO: Proper handling here
 			exception.printStackTrace();

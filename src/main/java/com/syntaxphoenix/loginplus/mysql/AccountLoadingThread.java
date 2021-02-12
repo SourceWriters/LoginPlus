@@ -14,7 +14,7 @@ public class AccountLoadingThread extends Thread {
 	
 	public void run() {
 		try {
-			pluginUtils.getAccountManager().getAccount(username);
+			pluginUtils.createAccountDatabase().getAccount(username);
 		} catch (Exception exception) {
 			exception.printStackTrace();
 		}

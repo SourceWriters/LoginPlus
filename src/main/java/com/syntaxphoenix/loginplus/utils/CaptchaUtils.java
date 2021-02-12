@@ -11,7 +11,6 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 
 import com.syntaxphoenix.loginplus.config.MessagesConfig;
-import com.syntaxphoenix.loginplus.utils.login.Status;
 
 public class CaptchaUtils {
 	

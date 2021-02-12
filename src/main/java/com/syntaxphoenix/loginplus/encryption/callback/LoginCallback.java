@@ -32,7 +32,7 @@ public class LoginCallback extends BukkitRunnable implements EncryptionCallback 
 	@Override
 	public void run() {
 		try {
-			Optional<Account> account = pluginUtils.getAccountManager().getAccount(this.player.getName());
+			Optional<Account> account = pluginUtils.createAccountDatabase().getAccount(this.player.getName());
 			if (account.isPresent()) {
 				this.pluginUtils.getEncryptionManager().validatePassword(password, account.get().getType(), account.get().getHash(), this);
 			}

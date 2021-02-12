@@ -44,7 +44,7 @@ public class RegisterCallback extends BukkitRunnable implements EncryptionCallba
 	public void encryptCallback(String hash) {
 		Account account = new Account(player.getName(), hash, type, false);
 		try {
-			pluginUtils.getAccountManager().createAccount(account);
+			pluginUtils.createAccountDatabase().createAccount(account);
 			try {
 				GeneralReflections.sendTitle(player, 20, pluginUtils.getConfig().getTitleTime() * 20, 20, MessagesConfig.title_register_success_title, MessagesConfig.title_register_success_subtitle);
 			} catch (InstantiationException | IllegalAccessException | IllegalArgumentException

@@ -1,31 +1,38 @@
 package com.syntaxphoenix.loginplus.encryption.thread;
 
+import org.bukkit.Bukkit;
+
+import com.syntaxphoenix.loginplus.LoginPlus;
 import com.syntaxphoenix.loginplus.encryption.EncryptionManager;
 import com.syntaxphoenix.loginplus.encryption.EncryptionType;
+import com.syntaxphoenix.loginplus.encryption.EncryptionUtils;
 
 public class EncryptionThread extends Thread {
 	
 	private EncryptionThreadMethod method;
 	private EncryptionManager manager;
 	private EncryptionCallback callback;
+	private EncryptionUtils encryptionUtils;
 	
 	private String password;
 	private EncryptionType type;
 	private String hash;
 	
-	public EncryptionThread(EncryptionManager manager, EncryptionCallback callback, String password, EncryptionType type) {
+	public EncryptionThread(EncryptionManager manager, EncryptionUtils encryptionUtils, EncryptionCallback callback, String password, EncryptionType type) {
 		this.method = EncryptionThreadMethod.HASH;
 		this.manager = manager;
 		this.callback = callback;
+		this.encryptionUtils = encryptionUtils;
 		
 		this.password = password;
 		this.type = type;
 	}
 	
-	public EncryptionThread(EncryptionManager manager, EncryptionCallback callback, String password, EncryptionType type, String hash) {
+	public EncryptionThread(EncryptionManager manager, EncryptionUtils encryptionUtils, EncryptionCallback callback, String password, EncryptionType type, String hash) {
 		this.method = EncryptionThreadMethod.VALIDATE;
 		this.manager = manager;
 		this.callback = callback;
+		this.encryptionUtils = encryptionUtils;
 		
 		this.password = password;
 		this.type = type;
@@ -48,7 +55,6 @@ public class EncryptionThread extends Thread {
 		} else {
 			this.validatePassword();
 		}
-		this.manager.endRun();
 	}
 	
 	public synchronized void checkQueue() {
@@ -62,14 +68,26 @@ public class EncryptionThread extends Thread {
 		}
 	}
 	
-	public void hashPassword() {
-		String hash = this.manager.getEncryptionUtils().hashPassword(this.password, this.type);
-		this.callback.encryptCallback(hash);
+	private void hashPassword() {
+		String hash = this.encryptionUtils.hashPassword(this.password, this.type);
+		Bukkit.getScheduler().runTask(LoginPlus.getInstance(), new Runnable() {
+			@Override
+			public void run() {
+				callback.encryptCallback(hash);
+				manager.endRun();
+			}		
+		});
 	}
 	
-	public void validatePassword() {
-		boolean valid = this.manager.getEncryptionUtils().verifyPassword(this.password, this.type, this.hash);
-		this.callback.validateCallback(valid);
+	private void validatePassword() {
+		boolean valid = this.encryptionUtils.verifyPassword(this.password, this.type, this.hash);
+		Bukkit.getScheduler().runTask(LoginPlus.getInstance(), new Runnable() {
+			@Override
+			public void run() {
+				callback.validateCallback(valid);
+				manager.endRun();
+			}		
+		});
 	}
 
 }

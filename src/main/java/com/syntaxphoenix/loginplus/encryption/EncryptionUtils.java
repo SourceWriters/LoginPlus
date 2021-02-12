@@ -2,8 +2,6 @@ package com.syntaxphoenix.loginplus.encryption;
 
 import java.security.MessageDigest;
 
-import com.syntaxphoenix.loginplus.config.MainConfig;
-
 import at.favre.lib.crypto.bcrypt.BCrypt;
 import de.mkammerer.argon2.Argon2;
 import de.mkammerer.argon2.Argon2Factory;
@@ -12,11 +10,18 @@ import de.mkammerer.argon2.Argon2Factory.Argon2Types;
 public class EncryptionUtils {
 	
 	private Argon2 argon2;
-	private MainConfig config;
+	private int argon2Cores;
+	private int argon2Memory;
+	private int argon2Parallelism;
+	private int bcryptRounds;
 	
-	public EncryptionUtils(MainConfig config) {
+	public EncryptionUtils(int argon2Cores, int argon2Memory, int argon2Parallelism, int bcryptRounds) {
 		this.argon2 = Argon2Factory.create(Argon2Types.ARGON2id);
-		this.config = config;
+		
+		this.argon2Cores = argon2Cores;
+		this.argon2Memory = argon2Memory;
+		this.argon2Parallelism = argon2Parallelism;
+		this.bcryptRounds = bcryptRounds;
 	}
 	
 	public String hashPassword(String password, EncryptionType type) {
@@ -33,11 +38,11 @@ public class EncryptionUtils {
 		} 
 		
 		if (type == EncryptionType.ARGON_2) {
-			return this.argon2.hash(config.getArgon2Cores(), config.getArgon2Memory() * 1024, config.getArgon2Parallelism(), password);
+			return this.argon2.hash(argon2Cores, argon2Memory * 1024, argon2Parallelism, password);
 		}
 		
 		if (type == EncryptionType.BCRYPT) {
-			return BCrypt.withDefaults().hashToString(config.getBcryptRounds(), password.toCharArray());
+			return BCrypt.withDefaults().hashToString(bcryptRounds, password.toCharArray());
 		}
 		return null;
 	}
