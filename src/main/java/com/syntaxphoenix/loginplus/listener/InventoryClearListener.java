@@ -10,13 +10,21 @@ import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.inventory.Inventory;
 
 import com.syntaxphoenix.loginplus.utils.PluginUtils;
+import com.syntaxphoenix.loginplus.utils.login.Status;
 
 public class InventoryClearListener implements Listener {
+	
+	private PluginUtils pluginUtils;
+	
+	public InventoryClearListener(PluginUtils pluginUtils) {
+		this.pluginUtils = pluginUtils;
+	}
 	
 	@EventHandler(priority=EventPriority.LOWEST)
 	public void on(PlayerJoinEvent event) {
 		Player player = event.getPlayer();
-		if (PluginUtils.login.contains(player) || PluginUtils.register.contains(player) || PluginUtils.captcha.contains(player)) {
+		Status status = pluginUtils.getUserHandler().getStatus(player);
+		if (status == Status.LOGIN || status == Status.REGISTER || status == Status.CAPTCHA || status == Status.LOGGEDIN) {
 			Inventory inventoryCopy = Bukkit.createInventory(null, 54);
 			inventoryCopy.setContents(player.getInventory().getContents());
 			PluginUtils.inventories.put(player, inventoryCopy);
@@ -26,9 +34,9 @@ public class InventoryClearListener implements Listener {
 	
 	@EventHandler
 	public void on(PlayerQuitEvent event) {
-		Player player = event.getPlayer();
-		if (PluginUtils.login.contains(player) || PluginUtils.register.contains(player) || PluginUtils.captcha.contains(player)) {
-			setInventory(player);
+		Status status = pluginUtils.getUserHandler().getStatus(event.getPlayer());
+		if (status == Status.LOGIN || status == Status.REGISTER || status == Status.CAPTCHA || status == Status.LOGGEDIN) {
+			setInventory(event.getPlayer());
 		}
 	}
 	
