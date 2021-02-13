@@ -26,18 +26,23 @@ public class CaptchaUtils {
 		for (int counter = 0; counter < 27; counter++) {
 			inventory.setItem(counter, ItemUtils.DyeCreator(MessagesConfig.captcha_dont_click, null, null, 1, DyeColor.GRAY));
 		}
-		List<String> slots = new ArrayList<String>();
+		List<Integer> slots = new ArrayList<Integer>();
 		
 		while (captchaItems > 0) {
 			captchaItems--;
 			int slot = random.nextInt(27);
-			while (slots.contains(slot + "")) {
+			while (slots.contains(slot)) {
 				slot = random.nextInt(27);
 			}
-			slots.add(slot + "");
+			slots.add(slot);
 			inventory.setItem(slot, ItemUtils.DyeCreator(MessagesConfig.captcha_change, null, null, 1, DyeColor.RED));
 		}
 		
 		return inventory;
+	}
+	
+	public static void openInventory(Player player) {
+		Inventory inventory = CaptchaUtils.createCaptchaInventory(player); 
+		player.openInventory(inventory);
 	}
 }

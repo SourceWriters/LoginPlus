@@ -1,117 +1,166 @@
 package com.syntaxphoenix.loginplus.config;
 
 import java.io.File;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.bukkit.configuration.file.FileConfiguration;
-import org.bukkit.configuration.file.YamlConfiguration;
-
 import com.syntaxphoenix.loginplus.encryption.EncryptionType;
 
-public class MainConfig {
+public class MainConfig extends Config {
 	
-	public static File f = new File("plugins/LoginPlus", "config.yml");
-	public static FileConfiguration cfg = YamlConfiguration.loadConfiguration(f);
+	private boolean timerEnabled;
+	private int timerTime;
 	
-	public static boolean timer_enabled = true;
-	public static int timer_time = 60;
-	public static EncryptionType type = EncryptionType.ARGON_2;
-	public static int login_attempts = 3;
-	public static boolean reconnect_time_enabled = true;
-	public static int reconnect_time = 30;
-	public static boolean login_failed_ban = true;
-	public static boolean login_failed_kick = true;
-	public static int login_failed_ban_time = 120;
-	public static boolean login_failed_commands_enabled = false;
-	public static List<String> login_failed_commands = new ArrayList<String>();
+	private int maxLoginAttempts;
+	private boolean loginFailedBan;
+	private boolean loginFailedKick;
+	private int loginFailedBanTime;
+	private boolean loginFailedCommandsEnabled;
+	private List<String> loginFailedCommands = new ArrayList<String>();
 	
-	public static int titleTime = 5;
+	private boolean reconnectTimeEnabled;
+	private int reconnectTime;
 	
-	public static boolean captcha = false;
-	public static boolean captcha_on_login = true;
-	public static boolean captcha_on_register = true;
+	private int titleTime;
 	
-	public static int argon2Cores = 4;
-	public static int argon2Memory = 1024;
-	public static int argon2Parallelism = 8;
+	private boolean captchaEnabled;
+	private boolean captchaOnLogin;
+	private boolean captchaOnRegister;
 	
-	public static int bcryptRounds = 14;
+	private EncryptionType encryptionType = EncryptionType.ARGON_2;
+	private int encryptTasks;
 	
+	private int argon2Cores;
+	private int argon2Memory;
+	private int argon2Parallelism;
 	
-	public static void load() {
-		login_failed_commands.add("kick %Player%");
+	private int bcryptRounds;
+	
+	public MainConfig() {
+		super(new File("plugins/LoginPlus", "config.yml"));
+		
+		loginFailedCommands.add("kick %Player%");
 				
-		timer_enabled = setObject("timer.enabled", timer_enabled);
-		timer_time = setObject("timer.time", timer_time);
-		type = EncryptionType.valueOf(setObject("encryption.type", type.toString()));
-		login_attempts = setObject("login.max_attempts", login_attempts);
-		login_failed_ban = setObject("login.ban.enabled", login_failed_ban);
-		login_failed_kick = setObject("login.kick.enabled", login_failed_kick);
-		login_failed_ban_time = setObject("login.ban.time", login_failed_ban_time);
-		login_failed_commands_enabled = setObject("login.commands.enabled", login_failed_commands_enabled);
-		login_failed_commands = setObject("login.commands.commands", login_failed_commands);
-		reconnect_time_enabled = setObject("reconnect_time.enabled", reconnect_time_enabled);
-		reconnect_time = setObject("reconnect_time.time", reconnect_time);
-		captcha = setObject("captcha.enabled", captcha);
-		captcha_on_login = setObject("captcha.login", captcha_on_login);
-		captcha_on_register = setObject("captcha.register", captcha_on_register);
+		timerEnabled = set("timer.enabled", true);
+		timerTime = set("timer.time", 60);
 		
-		titleTime = setObject("title.time", titleTime);
+		maxLoginAttempts = set("login.max_attempts", 3);
+		loginFailedBan = set("login.ban.enabled", true);
+		loginFailedKick = set("login.kick.enabled", true);
+		loginFailedBanTime = set("login.ban.time", 120);
+		loginFailedCommandsEnabled = set("login.commands.enabled", false);
+		loginFailedCommands = set("login.commands.commands", loginFailedCommands);
 		
-		argon2Cores = setObject("encryption.argon2.cores", argon2Cores);
-		argon2Memory = setObject("encryption.argon2.memory", argon2Memory);
-		argon2Parallelism = setObject("encryption.argon2.parallelism", argon2Parallelism);
-		bcryptRounds = setObject("encryption.bcrypt.rounds", bcryptRounds);
-	}
-
-	public static int setObject(String path, int obj) {
-		if(cfg.contains(path)) {
-			return cfg.getInt(path);
-		} else {
-			cfg.set(path, obj);
-			save();
-			return obj;
-		}
-	}
-	
-	public static String setObject(String path, String obj) {
-		if(cfg.contains(path)) {
-			return cfg.getString(path);
-		} else {
-			cfg.set(path, obj);
-			save();
-			return obj;
-		}
+		reconnectTimeEnabled = set("reconnect_time.enabled", true);
+		reconnectTime = set("reconnect_time.time", 30);
+		
+		captchaEnabled = set("captcha.enabled", false);
+		captchaOnLogin = set("captcha.login", true);
+		captchaOnRegister = set("captcha.register", true);
+		
+		titleTime = set("title.time", 5);
+		
+		encryptionType = EncryptionType.valueOf(set("encryption.type", encryptionType.toString()));
+		encryptTasks = set("encryption.tasks", 5);
+		
+		argon2Cores = set("encryption.argon2.cores", Runtime.getRuntime().availableProcessors());
+		argon2Memory = set("encryption.argon2.memory", this.getArgon2DefaultMemory());
+		argon2Parallelism = set("encryption.argon2.parallelism", Runtime.getRuntime().availableProcessors() * 2);
+		
+		bcryptRounds = set("encryption.bcrypt.rounds", 14);
 	}
 	
-	public static boolean setObject(String path, boolean obj) {
-		if(cfg.contains(path)) {
-			return cfg.getBoolean(path);
-		} else {
-			cfg.set(path, obj);
-			save();
-			return obj;
-		}
+	public boolean isTimerEnabled() {
+		return this.timerEnabled;
 	}
 	
-	public static List<String> setObject(String path, List<String> obj) {
-		if(cfg.contains(path)) {
-			return cfg.getStringList(path);
-		} else {
-			cfg.set(path, obj);
-			save();
-			return obj;
-		}
+	public int getTimerTime() {
+		return this.timerTime;
 	}
 	
-	public static void save() {
-		try {
-			cfg.save(f);
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
+	public int getTitleTime() {
+		return this.titleTime;
 	}
-
+	
+	public EncryptionType getEncryptionType() {
+		return this.encryptionType;
+	}
+	
+	public int getEncryptionTasks() {
+		return this.encryptTasks;
+	}
+	
+	public int getArgon2Cores() {
+		return this.argon2Cores;
+	}
+	
+	public int getArgon2Memory() {
+		return this.argon2Memory;
+	}
+	
+	public int getArgon2Parallelism() {
+		return this.argon2Parallelism;
+	}
+	
+	public int getBcryptRounds() {
+		return this.bcryptRounds;
+	}
+	
+	public int getLoginFailedBanTime() {
+		return this.loginFailedBanTime;
+	}
+	
+	public boolean isLoginFailedBan() {
+		return this.loginFailedBan;
+	}
+	
+	public boolean isLoginFailedKick() {
+		return this.loginFailedKick;
+	}
+	
+	public boolean isReconnectTimeEnabled() {
+		return this.reconnectTimeEnabled;
+	}
+	
+	public int getReconnectTime() {
+		return this.reconnectTime;
+	}
+	
+	public List<String> getLoginFailedCommands() {
+		return this.loginFailedCommands;
+	}
+	
+	public boolean isLoginFailedCommandsEnabled() {
+		return this.loginFailedCommandsEnabled;
+	}
+	
+	public boolean isCaptchaEnabled() {
+		return this.captchaEnabled;
+	}
+	
+	public boolean isCaptchaOnLogin() {
+		return this.captchaOnLogin;
+	}
+	
+	public boolean isCaptchaOnRegister() {
+		return this.captchaOnRegister;
+	}
+	
+	public int getMaxLoginAttempts() {
+		return this.maxLoginAttempts;
+	}
+	
+	private int getArgon2DefaultMemory() {
+		long totalMemory = Runtime.getRuntime().totalMemory();
+		long argon2Usable = totalMemory / 40;
+		double megaBytes = argon2Usable / 1024.0D / 1024.0D;
+		int[] values = {64, 32, 16, 8, 4, 2};
+		
+		for (int value : values) {
+			if (megaBytes > value) {
+				return value;
+			}
+		}
+		return 1;
+	}
 }

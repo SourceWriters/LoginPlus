@@ -5,6 +5,7 @@ public enum Status {
 	REGISTER,
 	LOGIN,
 	CAPTCHA,
+	CHANGEPW,
 	LOGGEDIN;
 
 }

@@ -16,17 +16,17 @@ public class ItemUtils {
 	public static ItemStack ItemStackCreator(String name, String lore1, String lore2, Material m, int a) {
 		
 		List<String> list = new ArrayList<String>();
-		if(lore1 != null) {
+		if (lore1 != null) {
 			list.add(lore1);
 		}
-		if(lore2 != null) {
+		if (lore2 != null) {
 			list.add(lore2);
 		}
 		ItemStack i = new ItemStack(m);
 		ItemMeta imeta = i.getItemMeta();
 		imeta.setDisplayName(name);
-		if(!(lore1 == null && lore2 == null)) {
-		imeta.setLore(list);
+		if (!(lore1 == null && lore2 == null)) {
+			imeta.setLore(list);
 		}
 		i.setItemMeta(imeta);
 		i.setAmount(a);
@@ -36,18 +36,18 @@ public class ItemUtils {
 	public static ItemStack LeatherCreator(String name, String lore1, String lore2, Material m, int a, Color c) {
 		
 		List<String> list = new ArrayList<String>();
-		if(lore1 != null) {
+		if (lore1 != null) {
 			list.add(lore1);
 		}
-		if(lore2 != null) {
+		if (lore2 != null) {
 			list.add(lore2);
 		}
 		ItemStack i = new ItemStack(m);
 		LeatherArmorMeta imeta = (LeatherArmorMeta) i.getItemMeta();
 		imeta.setDisplayName(name);
 		imeta.setColor(c);
-		if(!(lore1 == null && lore2 == null)) {
-		imeta.setLore(list);
+		if (!(lore1 == null && lore2 == null)) {
+			imeta.setLore(list);
 		}
 		i.setItemMeta(imeta);
 		i.setAmount(a);
@@ -57,10 +57,10 @@ public class ItemUtils {
 	public static ItemStack DyeCreator(String name, String lore1, String lore2, int a, DyeColor c) {
 		
 		List<String> list = new ArrayList<String>();
-		if(lore1 != null) {
+		if (lore1 != null) {
 			list.add(lore1);
 		}
-		if(lore2 != null) {
+		if (lore2 != null) {
 			list.add(lore2);
 		}
 		Dye d = new Dye();
@@ -68,8 +68,8 @@ public class ItemUtils {
 		ItemStack i = d.toItemStack();
 		ItemMeta imeta = i.getItemMeta();
 		imeta.setDisplayName(name);
-		if(!(lore1 == null && lore2 == null)) {
-		imeta.setLore(list);
+		if (!(lore1 == null && lore2 == null)) {
+			imeta.setLore(list);
 		}
 		i.setItemMeta(imeta);
 		i.setAmount(a);

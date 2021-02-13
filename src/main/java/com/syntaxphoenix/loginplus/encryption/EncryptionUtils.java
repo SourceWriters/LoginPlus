@@ -2,8 +2,6 @@ package com.syntaxphoenix.loginplus.encryption;
 
 import java.security.MessageDigest;
 
-import com.syntaxphoenix.loginplus.config.MainConfig;
-
 import at.favre.lib.crypto.bcrypt.BCrypt;
 import de.mkammerer.argon2.Argon2;
 import de.mkammerer.argon2.Argon2Factory;
@@ -11,7 +9,22 @@ import de.mkammerer.argon2.Argon2Factory.Argon2Types;
 
 public class EncryptionUtils {
 	
-	public static String hashPassword(String password, EncryptionType type) {
+	private Argon2 argon2;
+	private int argon2Cores;
+	private int argon2Memory;
+	private int argon2Parallelism;
+	private int bcryptRounds;
+	
+	public EncryptionUtils(int argon2Cores, int argon2Memory, int argon2Parallelism, int bcryptRounds) {
+		this.argon2 = Argon2Factory.create(Argon2Types.ARGON2id);
+		
+		this.argon2Cores = argon2Cores;
+		this.argon2Memory = argon2Memory;
+		this.argon2Parallelism = argon2Parallelism;
+		this.bcryptRounds = bcryptRounds;
+	}
+	
+	public String hashPassword(String password, EncryptionType type) {
 		if (type == EncryptionType.SHA256) {
 			return sha256(password);
 		} 
@@ -25,23 +38,21 @@ public class EncryptionUtils {
 		} 
 		
 		if (type == EncryptionType.ARGON_2) {
-			Argon2 argon2 = Argon2Factory.create(Argon2Types.ARGON2id);
-			return argon2.hash(MainConfig.argon2Cores, MainConfig.argon2Memory * 1024, MainConfig.argon2Parallelism, password);
+			return this.argon2.hash(argon2Cores, argon2Memory * 1024, argon2Parallelism, password);
 		}
 		
 		if (type == EncryptionType.BCRYPT) {
-			return BCrypt.withDefaults().hashToString(MainConfig.bcryptRounds, password.toCharArray());
+			return BCrypt.withDefaults().hashToString(bcryptRounds, password.toCharArray());
 		}
 		return null;
 	}
 	
-	public static boolean verifyPassword(String password, EncryptionType type, String hash) {
+	public boolean verifyPassword(String password, EncryptionType type, String hash) {
 		if (type == EncryptionType.SHA256 || type == EncryptionType.SHA512 || type == EncryptionType.MD_5) {
 			return hashPassword(password, type).equalsIgnoreCase(hash);
 		} 
 		if (type == EncryptionType.ARGON_2) {
-			Argon2 argon2 = Argon2Factory.create(Argon2Types.ARGON2id);
-			return argon2.verify(hash, password);
+			return this.argon2.verify(hash, password);
 		} 
 		if (type == EncryptionType.BCRYPT) {
 			BCrypt.Result result = BCrypt.verifyer().verify(password.toCharArray(), hash);
@@ -50,7 +61,7 @@ public class EncryptionUtils {
 		return false;
 	}
 
-	public static String sha512(String base) {
+	private String sha512(String base) {
 	    try{
 	        MessageDigest digest = MessageDigest.getInstance("SHA-512");
 	        byte[] hash = digest.digest(base.getBytes("UTF-8"));
@@ -68,7 +79,7 @@ public class EncryptionUtils {
 	    }
 	}
 	
-	public static String md5(String base) {
+	private String md5(String base) {
 	    try{
 	        MessageDigest digest = MessageDigest.getInstance("MD5");
 	        byte[] hash = digest.digest(base.getBytes("UTF-8"));
@@ -86,7 +97,7 @@ public class EncryptionUtils {
 	    }
 	}
 
-	public static String sha256(String base) {
+	private String sha256(String base) {
 	    try{
 	        MessageDigest digest = MessageDigest.getInstance("SHA-256");
 	        byte[] hash = digest.digest(base.getBytes("UTF-8"));

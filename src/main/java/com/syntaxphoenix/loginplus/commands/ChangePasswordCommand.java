@@ -9,15 +9,21 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.command.ConsoleCommandSender;
 import org.bukkit.entity.Player;
 
-import com.syntaxphoenix.loginplus.config.DataTranslator;
-import com.syntaxphoenix.loginplus.config.MainConfig;
+import com.syntaxphoenix.loginplus.LoginPlus;
 import com.syntaxphoenix.loginplus.config.MessagesConfig;
-import com.syntaxphoenix.loginplus.encryption.EncryptionUtils;
+import com.syntaxphoenix.loginplus.encryption.callback.ChangePasswordOthersCallback;
 import com.syntaxphoenix.loginplus.utils.PluginUtils;
+import com.syntaxphoenix.loginplus.utils.login.Status;
 
 import net.sourcewriters.minecraft.versiontools.reflection.GeneralReflections;
 
 public class ChangePasswordCommand implements CommandExecutor {
+	
+	private PluginUtils pluginUtils;
+	
+	public ChangePasswordCommand(PluginUtils pluginUtils) {
+		this.pluginUtils = pluginUtils;
+	}
 
 	@Override
 	public boolean onCommand(CommandSender sender, Command command, String commandLabel, String[] args) {		
@@ -29,10 +35,10 @@ public class ChangePasswordCommand implements CommandExecutor {
 						GeneralReflections.sendTitle(player, 20, 100, 20, MessagesConfig.title_changepw_title, MessagesConfig.title_changepw_subtitle);
 					} catch (InstantiationException | IllegalAccessException | IllegalArgumentException
 							| InvocationTargetException | NoSuchMethodException | SecurityException
-							| NoSuchFieldException e) {
-						e.printStackTrace();
+							| NoSuchFieldException exception) {
+						exception.printStackTrace();
 					}
-					PluginUtils.changepw.add(player);
+					pluginUtils.getUserHandler().setStatus(player, Status.CHANGEPW);
 				} else {
 					player.sendMessage(MessagesConfig.prefix + MessagesConfig.no_permission);
 				}
@@ -40,7 +46,9 @@ public class ChangePasswordCommand implements CommandExecutor {
 				if (player.hasPermission("loginplus.*")) {
 					Player searchedPlayer = Bukkit.getPlayerExact(args[0]);
 					if (searchedPlayer != null) {
-						DataTranslator.setPassword(searchedPlayer.getUniqueId().toString(), EncryptionUtils.hashPassword(args[1], MainConfig.type), MainConfig.type.toString());
+						pluginUtils.getUserHandler().addAwaitingCallback(player);
+						ChangePasswordOthersCallback callback = new ChangePasswordOthersCallback(pluginUtils, player, searchedPlayer, args[1]);
+						callback.runTaskAsynchronously(LoginPlus.getInstance());
 					} else {
 						player.sendMessage(MessagesConfig.prefix + MessagesConfig.player_offline);
 					}
@@ -53,7 +61,8 @@ public class ChangePasswordCommand implements CommandExecutor {
 				if (args.length == 2) {
 					Player searchedPlayer = Bukkit.getPlayerExact(args[0]);
 					if (searchedPlayer != null) {
-						DataTranslator.setPassword(searchedPlayer.getUniqueId().toString(), EncryptionUtils.hashPassword(args[1], MainConfig.type), MainConfig.type.toString());
+						ChangePasswordOthersCallback callback = new ChangePasswordOthersCallback(pluginUtils, sender, searchedPlayer, args[1]);
+						callback.runTaskAsynchronously(LoginPlus.getInstance());
 					} else {
 						System.out.println("[LoginPlus] The player is not online!");
 					}					

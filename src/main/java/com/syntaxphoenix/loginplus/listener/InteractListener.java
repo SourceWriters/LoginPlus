@@ -9,23 +9,33 @@ import org.bukkit.event.inventory.InventoryOpenEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 
 import com.syntaxphoenix.loginplus.utils.PluginUtils;
+import com.syntaxphoenix.loginplus.utils.login.Status;
 
 public class InteractListener implements Listener {
 	
+	private PluginUtils pluginUtils;
+	
+	public InteractListener(PluginUtils pluginUtils) {
+		this.pluginUtils = pluginUtils;
+	}
+	
 	@EventHandler(priority=EventPriority.HIGHEST)
-	public void on(PlayerInteractEvent e) {
-		Player p = e.getPlayer();
-		if(e.getAction() == Action.RIGHT_CLICK_AIR || e.getAction() == Action.RIGHT_CLICK_BLOCK || e.getAction() == Action.LEFT_CLICK_AIR || e.getAction() == Action.LEFT_CLICK_BLOCK) {
-			if(PluginUtils.login.contains(p) || PluginUtils.register.contains(p) || PluginUtils.captcha.contains(p)) {
-				e.setCancelled(true);
+	public void on(PlayerInteractEvent event) {
+		if (event.getAction() == Action.RIGHT_CLICK_AIR ||
+			event.getAction() == Action.RIGHT_CLICK_BLOCK ||
+			event.getAction() == Action.LEFT_CLICK_AIR ||
+			event.getAction() == Action.LEFT_CLICK_BLOCK) {
+			Status status = pluginUtils.getUserHandler().getStatus(event.getPlayer());
+			if (status == Status.LOGIN || status == Status.REGISTER || status == Status.CAPTCHA || status == Status.LOGGEDIN) {
+				event.setCancelled(true);
 			}
 		}
 	}
 	
 	@EventHandler(priority=EventPriority.HIGHEST)
 	public void on(InventoryOpenEvent event) {
-		Player player = (Player) event.getPlayer();
-		if (PluginUtils.login.contains(player) || PluginUtils.register.contains(player) || PluginUtils.captcha.contains(player)) {
+		Status status = pluginUtils.getUserHandler().getStatus((Player) event.getPlayer());
+		if (status == Status.LOGIN || status == Status.REGISTER || status == Status.CAPTCHA || status == Status.LOGGEDIN) {
 			event.setCancelled(true);
 		}
 	}

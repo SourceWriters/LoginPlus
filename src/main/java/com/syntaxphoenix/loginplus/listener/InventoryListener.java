@@ -1,7 +1,5 @@
 package com.syntaxphoenix.loginplus.listener;
 
-import java.lang.reflect.InvocationTargetException;
-
 import org.bukkit.Bukkit;
 import org.bukkit.DyeColor;
 import org.bukkit.entity.Player;
@@ -14,107 +12,80 @@ import org.bukkit.event.player.PlayerDropItemEvent;
 import org.bukkit.event.player.PlayerPickupItemEvent;
 
 import com.syntaxphoenix.loginplus.LoginPlus;
-import com.syntaxphoenix.loginplus.config.MainConfig;
 import com.syntaxphoenix.loginplus.config.MessagesConfig;
-import com.syntaxphoenix.loginplus.config.PasswordConfig;
-import com.syntaxphoenix.loginplus.premium.PremiumCheck;
 import com.syntaxphoenix.loginplus.utils.CaptchaUtils;
 import com.syntaxphoenix.loginplus.utils.ItemUtils;
 import com.syntaxphoenix.loginplus.utils.PluginUtils;
+import com.syntaxphoenix.loginplus.utils.login.Status;
 
-import net.sourcewriters.minecraft.versiontools.reflection.GeneralReflections;
-
+@SuppressWarnings("deprecation")
 public class InventoryListener implements Listener {
 	
+	private PluginUtils pluginUtils;
+	
+	public InventoryListener(PluginUtils pluginUtils) {
+		this.pluginUtils = pluginUtils;
+	}
+	
 	@EventHandler(priority=EventPriority.HIGHEST)
-	public void on(InventoryClickEvent e) {
-		Player p = (Player) e.getWhoClicked();
-		if(PluginUtils.login.contains(p) || PluginUtils.register.contains(p) || PluginUtils.captcha.contains(p)) {
-			if(!e.getView().getTitle().equalsIgnoreCase(MessagesConfig.captcha_name)) {
-				e.setCancelled(true);
-			} else {
-				if(e.getCurrentItem() != null) {
-					if(e.getCurrentItem().hasItemMeta()) {
-						if(e.getCurrentItem().getItemMeta().hasDisplayName()) {
-							String disp = e.getCurrentItem().getItemMeta().getDisplayName();
-							if(disp.equalsIgnoreCase(MessagesConfig.captcha_dont_click)) {
-								CaptchaUtils.captchaParts.remove(p);
-								p.kickPlayer(MessagesConfig.prefix + MessagesConfig.captcha_failed);
-							} else if(disp.equalsIgnoreCase(MessagesConfig.captcha_change)) {
-								int slot = e.getSlot();
-								e.getInventory().setItem(slot, ItemUtils.DyeCreator(MessagesConfig.captcha_changed, null, null, 1, DyeColor.LIME));
-								CaptchaUtils.captchaParts.put(p, CaptchaUtils.captchaParts.get(p)-1);
-								if(CaptchaUtils.captchaParts.get(p) <= 0) {
-									PluginUtils.captcha.remove(p);
-									p.closeInventory();
-									if(PasswordConfig.isInDatabase(p.getUniqueId().toString())) {
-										if(PasswordConfig.getPremium(p.getUniqueId().toString())) {
-											if(!PremiumCheck.isPremium(p)) {
-												p.kickPlayer(MessagesConfig.prefix + MessagesConfig.no_premium);
-											}
-											PluginUtils.login.remove(p);
-											PluginUtils.timer.remove(p);
-										} else {
-											try {
-												GeneralReflections.sendTitle(p, 20, 100, 20, MessagesConfig.title_login_title, MessagesConfig.title_login_subtitle);
-											} catch (InstantiationException | IllegalAccessException
-													| IllegalArgumentException | InvocationTargetException
-													| NoSuchMethodException | SecurityException
-													| NoSuchFieldException e1) {
-												e1.printStackTrace();
-											}
-											PluginUtils.login.add(p);
-											if(MainConfig.timer_enabled) {
-												PluginUtils.timer.put(p, 0);
-											}
-											PluginUtils.attempts.put(p, MainConfig.login_attempts);
-										}
-									} else {
-										try {
-											GeneralReflections.sendTitle(p, 20, 100, 20, MessagesConfig.title_register_title, MessagesConfig.title_register_subtitle);
-										} catch (InstantiationException | IllegalAccessException
-												| IllegalArgumentException | InvocationTargetException
-												| NoSuchMethodException | SecurityException | NoSuchFieldException e1) {
-											e1.printStackTrace();
-										}
-										PluginUtils.register.add(p);
-									}
-								}
-							}
-						}
-					}
-				}
-				e.setCancelled(true);
+	public void on(InventoryClickEvent event) {
+		Player player = (Player) event.getWhoClicked();
+		Status status = pluginUtils.getUserHandler().getStatus(player);
+		if (status != Status.LOGIN && status != Status.REGISTER && status != Status.CAPTCHA && status != Status.LOGIN) {
+			return;
+		}
+		event.setCancelled(true);
+		
+		if (!event.getView().getTitle().equalsIgnoreCase(MessagesConfig.captcha_name)) {
+			return;
+		}
+		
+		if (event.getCurrentItem() == null || !event.getCurrentItem().hasItemMeta() || !event.getCurrentItem().getItemMeta().hasDisplayName()) {
+			return;
+		}
+		
+		String name = event.getCurrentItem().getItemMeta().getDisplayName();
+		
+		if (name.equalsIgnoreCase(MessagesConfig.captcha_dont_click)) {
+			CaptchaUtils.captchaParts.remove(player);
+			player.kickPlayer(MessagesConfig.prefix + MessagesConfig.captcha_failed);
+		} else if(name.equalsIgnoreCase(MessagesConfig.captcha_change)) {
+			int slot = event.getSlot();
+			event.getInventory().setItem(slot, ItemUtils.DyeCreator(MessagesConfig.captcha_changed, null, null, 1, DyeColor.LIME));
+			CaptchaUtils.captchaParts.put(player, CaptchaUtils.captchaParts.get(player) - 1);
+			if (CaptchaUtils.captchaParts.get(player) <= 0) {
+				player.closeInventory();
+				this.pluginUtils.getLoginManager().loginUser(player, false);
 			}
 		}
 	}
 	
 	@EventHandler
-	public void on(InventoryCloseEvent e) {
-		Player p = (Player) e.getPlayer();
-		if(PluginUtils.captcha.contains(p)) {
-			Bukkit.getScheduler().scheduleSyncDelayedTask(LoginPlus.m, new Runnable() {
+	public void on(InventoryCloseEvent event) {
+		Player player = (Player) event.getPlayer();
+		if (pluginUtils.getUserHandler().getStatus(player) == Status.CAPTCHA) {
+			Bukkit.getScheduler().scheduleSyncDelayedTask(LoginPlus.getInstance(), new Runnable() {
 				@Override
 				public void run() {
-					p.openInventory(CaptchaUtils.createCaptchaInventory(p));
+					player.openInventory(CaptchaUtils.createCaptchaInventory(player));
 				}	
 			}, 1);
 		}
 	}
 	
 	@EventHandler(priority=EventPriority.HIGHEST)
-	public void on(PlayerPickupItemEvent e) {
-		Player p = (Player) e.getPlayer();
-		if(PluginUtils.login.contains(p) || PluginUtils.register.contains(p) || PluginUtils.captcha.contains(p)) {
-			e.setCancelled(true);
+	public void on(PlayerPickupItemEvent event) {
+		Status status = pluginUtils.getUserHandler().getStatus((Player) event.getPlayer());
+		if (status == Status.LOGIN || status == Status.REGISTER || status == Status.CAPTCHA || status == Status.LOGGEDIN) {
+			event.setCancelled(true);
 		}
 	}
 	
 	@EventHandler(priority=EventPriority.HIGHEST)
-	public void on(PlayerDropItemEvent e) {
-		Player p = (Player) e.getPlayer();
-		if(PluginUtils.login.contains(p) || PluginUtils.register.contains(p) || PluginUtils.captcha.contains(p)) {
-			e.setCancelled(true);
+	public void on(PlayerDropItemEvent event) {
+		Status status = pluginUtils.getUserHandler().getStatus((Player) event.getPlayer());
+		if (status == Status.LOGIN || status == Status.REGISTER || status == Status.CAPTCHA || status == Status.LOGGEDIN) {
+			event.setCancelled(true);
 		}
 	}
 }

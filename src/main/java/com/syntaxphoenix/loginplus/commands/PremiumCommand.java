@@ -5,29 +5,26 @@ import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
-import com.syntaxphoenix.loginplus.config.DataTranslator;
+import com.syntaxphoenix.loginplus.LoginPlus;
 import com.syntaxphoenix.loginplus.config.MessagesConfig;
-import com.syntaxphoenix.loginplus.premium.PremiumCheck;
+import com.syntaxphoenix.loginplus.utils.PluginUtils;
+import com.syntaxphoenix.loginplus.utils.tasks.ChangePremiumTask;
 
 public class PremiumCommand implements CommandExecutor {
+	
+	private PluginUtils pluginUtils;
+	
+	public PremiumCommand(PluginUtils pluginUtils) {
+		this.pluginUtils = pluginUtils;
+	}
 
 	@Override
 	public boolean onCommand(CommandSender sender, Command command, String commandLabel, String[] args) {	
 		if (sender instanceof Player) {
 			Player player = (Player) sender;
-			String uuid = player.getUniqueId().toString();
 			if (player.hasPermission("loginplus.*") || player.hasPermission("loginplus.premium")) {
-				if (DataTranslator.getAccountData(uuid).isPremium() == false) {
-					if (PremiumCheck.isPremium(player)) {
-						DataTranslator.setPremium(uuid, true);
-						player.sendMessage(MessagesConfig.prefix + MessagesConfig.premium_enabled);
-					} else {
-						player.sendMessage(MessagesConfig.prefix + MessagesConfig.no_premium);
-					}
-				} else {
-					DataTranslator.setPremium(uuid, false);
-					player.sendMessage(MessagesConfig.prefix + MessagesConfig.premium_disabled);
-				}
+				ChangePremiumTask task = new ChangePremiumTask(pluginUtils, player);
+				task.runTaskAsynchronously(LoginPlus.getInstance());
 			} else {
 				player.sendMessage(MessagesConfig.prefix + MessagesConfig.no_permission);
 			}
