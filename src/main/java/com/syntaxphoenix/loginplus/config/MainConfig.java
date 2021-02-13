@@ -27,6 +27,9 @@ public class MainConfig extends Config {
 	private boolean captchaOnLogin;
 	private boolean captchaOnRegister;
 	
+	private boolean sessionsEnabled;
+	private int sessionTime;
+	
 	private EncryptionType encryptionType = EncryptionType.ARGON_2;
 	private int encryptTasks;
 	
@@ -63,11 +66,19 @@ public class MainConfig extends Config {
 		encryptionType = EncryptionType.valueOf(set("encryption.type", encryptionType.toString()));
 		encryptTasks = set("encryption.tasks", 5);
 		
-		argon2Cores = set("encryption.argon2.cores", Runtime.getRuntime().availableProcessors());
+		int processors = Runtime.getRuntime().availableProcessors();
+		if (processors % 2 != 0 && processors > 1) {
+			processors--;
+		}
+		
+		argon2Cores = set("encryption.argon2.cores", processors / 2);
 		argon2Memory = set("encryption.argon2.memory", this.getArgon2DefaultMemory());
-		argon2Parallelism = set("encryption.argon2.parallelism", Runtime.getRuntime().availableProcessors() * 2);
+		argon2Parallelism = set("encryption.argon2.parallelism", processors);
 		
 		bcryptRounds = set("encryption.bcrypt.rounds", 14);
+		
+		sessionsEnabled = set("sessions.enabled", false);
+		sessionTime = set("sessions.time", 300);
 	}
 	
 	public boolean isTimerEnabled() {
@@ -148,6 +159,14 @@ public class MainConfig extends Config {
 	
 	public int getMaxLoginAttempts() {
 		return this.maxLoginAttempts;
+	}
+	
+	public boolean isSessionsEnabled() {
+		return this.sessionsEnabled;
+	}
+	
+	public int getSessionTime() {
+		return this.sessionTime;
 	}
 	
 	private int getArgon2DefaultMemory() {

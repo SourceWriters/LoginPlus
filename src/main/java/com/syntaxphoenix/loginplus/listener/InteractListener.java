@@ -9,6 +9,7 @@ import org.bukkit.event.inventory.InventoryOpenEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 
 import com.syntaxphoenix.loginplus.utils.PluginUtils;
+import com.syntaxphoenix.loginplus.utils.captcha.CaptchaInventoryHolder;
 import com.syntaxphoenix.loginplus.utils.login.Status;
 
 public class InteractListener implements Listener {
@@ -36,6 +37,9 @@ public class InteractListener implements Listener {
 	public void on(InventoryOpenEvent event) {
 		Status status = pluginUtils.getUserHandler().getStatus((Player) event.getPlayer());
 		if (status == Status.LOGIN || status == Status.REGISTER || status == Status.CAPTCHA || status == Status.LOGGEDIN) {
+			if (event.getInventory().getHolder() instanceof CaptchaInventoryHolder) {
+				return;
+			}
 			event.setCancelled(true);
 		}
 	}

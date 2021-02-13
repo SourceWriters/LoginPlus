@@ -1,4 +1,4 @@
-package com.syntaxphoenix.loginplus.mysql;
+package com.syntaxphoenix.loginplus.accounts.tasks;
 
 import com.syntaxphoenix.loginplus.utils.PluginUtils;
 

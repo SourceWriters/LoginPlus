@@ -58,6 +58,7 @@ public class LoginCallback extends BukkitRunnable implements EncryptionCallback 
 				exception.printStackTrace();
 			}
 		} else {
+			this.pluginUtils.getLoginManager().addLoginAttempt(player);
 			if (this.pluginUtils.getLoginManager().tooManyAttempts(player)) {
 				pluginUtils.getLoginManager().clearAttempts(player);
 				pluginUtils.getTimer().addKickPlayer(player);

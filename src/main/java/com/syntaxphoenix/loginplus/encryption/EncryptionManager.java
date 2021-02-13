@@ -3,7 +3,6 @@ package com.syntaxphoenix.loginplus.encryption;
 import java.util.LinkedList;
 import java.util.Queue;
 
-import com.syntaxphoenix.loginplus.LoginPlus;
 import com.syntaxphoenix.loginplus.config.MainConfig;
 import com.syntaxphoenix.loginplus.encryption.thread.EncryptionCallback;
 import com.syntaxphoenix.loginplus.encryption.thread.EncryptionThread;

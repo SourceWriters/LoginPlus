@@ -13,9 +13,9 @@ import org.bukkit.event.player.PlayerPickupItemEvent;
 
 import com.syntaxphoenix.loginplus.LoginPlus;
 import com.syntaxphoenix.loginplus.config.MessagesConfig;
-import com.syntaxphoenix.loginplus.utils.CaptchaUtils;
 import com.syntaxphoenix.loginplus.utils.ItemUtils;
 import com.syntaxphoenix.loginplus.utils.PluginUtils;
+import com.syntaxphoenix.loginplus.utils.captcha.CaptchaInventoryHolder;
 import com.syntaxphoenix.loginplus.utils.login.Status;
 
 @SuppressWarnings("deprecation")
@@ -36,25 +36,30 @@ public class InventoryListener implements Listener {
 		}
 		event.setCancelled(true);
 		
-		if (!event.getView().getTitle().equalsIgnoreCase(MessagesConfig.captcha_name)) {
+		if (!(event.getInventory().getHolder() instanceof CaptchaInventoryHolder)) {
 			return;
 		}
 		
-		if (event.getCurrentItem() == null || !event.getCurrentItem().hasItemMeta() || !event.getCurrentItem().getItemMeta().hasDisplayName()) {
+		CaptchaInventoryHolder holder = (CaptchaInventoryHolder) event.getInventory().getHolder();
+		
+		if (holder.getPlayer() != player || event.getCurrentItem() == null || !event.getCurrentItem().hasItemMeta() || 
+			!event.getCurrentItem().getItemMeta().hasDisplayName()) {
 			return;
 		}
 		
 		String name = event.getCurrentItem().getItemMeta().getDisplayName();
 		
 		if (name.equalsIgnoreCase(MessagesConfig.captcha_dont_click)) {
-			CaptchaUtils.captchaParts.remove(player);
+			holder.getInventory().clear();
 			player.kickPlayer(MessagesConfig.prefix + MessagesConfig.captcha_failed);
-		} else if(name.equalsIgnoreCase(MessagesConfig.captcha_change)) {
+		} else if (name.equalsIgnoreCase(MessagesConfig.captcha_change)) {
 			int slot = event.getSlot();
 			event.getInventory().setItem(slot, ItemUtils.DyeCreator(MessagesConfig.captcha_changed, null, null, 1, DyeColor.LIME));
-			CaptchaUtils.captchaParts.put(player, CaptchaUtils.captchaParts.get(player) - 1);
-			if (CaptchaUtils.captchaParts.get(player) <= 0) {
+			holder.removeCaptchaItem();
+			if (holder.getCaptchaItems() <= 0) {
+				pluginUtils.getUserHandler().setStatus(player, Status.LOGGEDIN);
 				player.closeInventory();
+				holder.getInventory().clear();
 				this.pluginUtils.getLoginManager().loginUser(player, false);
 			}
 		}
@@ -67,7 +72,7 @@ public class InventoryListener implements Listener {
 			Bukkit.getScheduler().scheduleSyncDelayedTask(LoginPlus.getInstance(), new Runnable() {
 				@Override
 				public void run() {
-					player.openInventory(CaptchaUtils.createCaptchaInventory(player));
+					player.openInventory(new CaptchaInventoryHolder(player).getInventory());
 				}	
 			}, 1);
 		}
