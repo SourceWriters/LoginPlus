@@ -17,13 +17,13 @@ public class ChangePasswordOthersCallback extends BukkitRunnable implements Encr
 	private PluginUtils pluginUtils;
 	
 	private CommandSender sender;
-	private Player player;
+	private String username;
 	private String password;
 	private EncryptionType type;
 	
-	public ChangePasswordOthersCallback(PluginUtils pluginUtils, CommandSender sender, Player player, String password) {
+	public ChangePasswordOthersCallback(PluginUtils pluginUtils, CommandSender sender, String username, String password) {
 		this.pluginUtils = pluginUtils;
-		this.player = player;
+		this.username = username;
 		this.password = password;
 		this.sender = sender;
 		
@@ -45,9 +45,9 @@ public class ChangePasswordOthersCallback extends BukkitRunnable implements Encr
 	public void encryptCallback(String hash) {
 		Optional<Account> account;
 		try {
-			account = this.pluginUtils.getAccountManager().getLocalAccount(player.getName());
-			if (account.isPresent()) {
-				account = this.pluginUtils.createAccountDatabase().getAccount(player.getName());
+			account = this.pluginUtils.getAccountManager().getLocalAccount(username);
+			if (!account.isPresent()) {
+				account = this.pluginUtils.createAccountDatabase().getAccount(username);
 			}
 			account.get().setType(type);
 			account.get().setHash(hash);
@@ -55,7 +55,6 @@ public class ChangePasswordOthersCallback extends BukkitRunnable implements Encr
 			
 			this.sender.sendMessage(MessagesConfig.prefix + "The account has been updated");
 		} catch (Exception exception) {
-			// TODO: Proper handling here
 			exception.printStackTrace();
 		}
 		if (sender instanceof Player) {

@@ -32,6 +32,8 @@ public class MessagesConfig {
 	public static String title_login_success_subtitle = "&7You can play now";
 	public static String title_login_failed_title = "&cIncorrect Password";
 	public static String title_login_failed_subtitle = "&7You have &c%Attempts% &7Attempts left";
+	public static String title_login_session_title = "&aYour Session was detected";
+	public static String title_login_session_subtitle = "&7You can play now";
 	public static String title_changepw_title = "&cChange password";
 	public static String title_changepw_subtitle = "&6Enter your password into the Chat";
 	public static String title_changepw_success_title = "&aPassword has been changed";
@@ -46,6 +48,7 @@ public class MessagesConfig {
 	public static String captcha_change = "&4Change";
 	public static String captcha_changed = "&aChanged";
 	
+	// TODO: Cleanup this mess
 	public static void load() {
 		prefix = fixColors(setObject("global.prefix", prefix));
 		already_logged_in = fixColors(setObject("error.already_loggedin", already_logged_in));
@@ -66,6 +69,8 @@ public class MessagesConfig {
 		title_register_success_subtitle = fixColors(setObject("title.register_success.subtitle", title_register_success_subtitle));
 		title_login_success_title = fixColors(setObject("title.login_success.title", title_login_success_title));
 		title_login_success_subtitle = fixColors(setObject("title.login_success.subtitle", title_login_success_subtitle));
+		title_login_session_title = fixColors(setObject("title.login_session.title", title_login_session_title));
+		title_login_session_subtitle = fixColors(setObject("title.login_session.subtitle", title_login_session_subtitle));
 		title_login_failed_title = fixColors(setObject("title.login_failed.title", title_login_failed_title));
 		title_login_failed_subtitle = fixColors(setObject("title.login_failed.subtitle", title_login_failed_subtitle));
 		title_changepw_title = fixColors(setObject("title.change_password.title", title_changepw_title));

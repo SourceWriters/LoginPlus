@@ -11,6 +11,7 @@ import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.inventory.meta.LeatherArmorMeta;
 import org.bukkit.material.Dye;
 
+// TODO: Make ItemBuilder from this mess
 public class ItemUtils {
 	
 	public static ItemStack ItemStackCreator(String name, String lore1, String lore2, Material m, int a) {

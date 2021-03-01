@@ -19,8 +19,7 @@ public class LoginManager {
 	}
 	
 	public void loginUser(Player player, boolean checkCaptcha) {
-		LoginCallback loginCallback = new LoginCallback(this.pluginUtils, player, checkCaptcha);	
-		System.out.println("Creating callback");
+		LoginCallback loginCallback = new LoginCallback(this.pluginUtils, player, checkCaptcha);
 		if (this.pluginUtils.getAccountManager().isLocalAccountLoaded(player.getName())) {
 			loginCallback.handleLogin();
 		} else {
@@ -29,7 +28,6 @@ public class LoginManager {
 	}
 	
 	public void callbackUser(String username) {
-		System.out.println("Calling back on user" + username);
 		if (this.callbacks.containsKey(username)) {
 			this.callbacks.get(username).handleLogin();
 			this.callbacks.remove(username);
@@ -44,7 +42,7 @@ public class LoginManager {
 	}
 	
 	public void addLoginAttempt(Player player) {
-		int tries = attempts.containsKey(player) ? (this.attempts.get(player) + 1) : 1;
+		int tries = this.attempts.containsKey(player) ? (this.attempts.get(player) + 1) : 1;
 		this.attempts.put(player, tries);
 	}
 	

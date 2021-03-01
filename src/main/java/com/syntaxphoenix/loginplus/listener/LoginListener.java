@@ -7,8 +7,8 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerLoginEvent;
 import org.bukkit.event.player.PlayerPreLoginEvent;
 
+import com.syntaxphoenix.loginplus.accounts.tasks.AccountLoadingThread;
 import com.syntaxphoenix.loginplus.config.MessagesConfig;
-import com.syntaxphoenix.loginplus.mysql.AccountLoadingThread;
 import com.syntaxphoenix.loginplus.utils.PluginUtils;
 
 @SuppressWarnings("deprecation")

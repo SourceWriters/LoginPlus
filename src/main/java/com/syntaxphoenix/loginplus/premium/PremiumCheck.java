@@ -10,6 +10,7 @@ import org.bukkit.entity.Player;
 
 public class PremiumCheck {
 
+	// TODO: Make proper implementation
 	public static boolean isPremium(Player p) {
 	    String player = p.getName();
 	    System.out.println(player);

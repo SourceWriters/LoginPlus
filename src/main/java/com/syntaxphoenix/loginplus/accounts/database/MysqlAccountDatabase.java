@@ -74,7 +74,7 @@ public class MysqlAccountDatabase implements AccountDatabase {
 		while (resultSet.next()) {			
 			if (resultSet != null) {
 				String hash = resultSet.getString("hash");
-				EncryptionType type = EncryptionType.valueOf(resultSet.getString("hash"));
+				EncryptionType type = EncryptionType.valueOf(resultSet.getString("type"));
 				boolean premium = resultSet.getBoolean("premium");
 				account = new Account(username, hash, type, premium);
 			}

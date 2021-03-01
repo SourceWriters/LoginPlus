@@ -34,18 +34,20 @@ import com.syntaxphoenix.loginplus.listener.QuitListener;
 import com.syntaxphoenix.loginplus.mysql.Mysql;
 import com.syntaxphoenix.loginplus.utils.login.LoginManager;
 import com.syntaxphoenix.loginplus.utils.login.Status;
+import com.syntaxphoenix.loginplus.utils.session.SessionManager;
 import com.syntaxphoenix.loginplus.utils.tasks.MainTimer;
 import com.syntaxphoenix.syntaxphoenixstats.SyntaxPhoenixStats;
 
 public class PluginUtils {
 	
-	public static HashMap<Player, Inventory> inventories = new HashMap<Player, Inventory>();
+	public static HashMap<Player, Inventory> inventories = new HashMap<Player, Inventory>(); //TODO: Move to UserHandler
 	public static String version = "";
 	
 	private AccountManager accountManager;
 	private UserHandler userHandler;
 	private EncryptionManager encryptionManager;
 	private LoginManager loginManager;
+	private SessionManager sessionManager;
 	
 	private Mysql mysql;
 	
@@ -72,6 +74,7 @@ public class PluginUtils {
 		this.userHandler = new UserHandler();
 		this.encryptionManager = new EncryptionManager(config);
 		this.loginManager = new LoginManager(this);
+		this.sessionManager = new SessionManager(config);
 		loadTimer();
 		loadListener();
 		loadCommands();
@@ -117,6 +120,10 @@ public class PluginUtils {
 	
 	public LoginManager getLoginManager() {
 		return this.loginManager;
+	}
+	
+	public SessionManager getSessionManager() {
+		return this.sessionManager;
 	}
 	
 	public MainConfig getConfig() {

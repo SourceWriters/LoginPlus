@@ -1,8 +1,7 @@
 name: LoginPlus
-version : 3.0.0
+version : 3.0.1
 author: SyntaxPhoenix IT-Solutions
 main: com.syntaxphoenix.loginplus.LoginPlus
-load: startup
 api-version: 1.13
 
 commands:
