@@ -3,7 +3,7 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>com.syntaxphoenix.java</groupId>
   <artifactId>LoginPlus</artifactId>
-  <version>3.0.0</version>
+  <version>3.0.1</version>
   <build>
     <resources>
       <resource>

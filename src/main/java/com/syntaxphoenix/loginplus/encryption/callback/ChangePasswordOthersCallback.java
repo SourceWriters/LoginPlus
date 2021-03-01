@@ -46,7 +46,7 @@ public class ChangePasswordOthersCallback extends BukkitRunnable implements Encr
 		Optional<Account> account;
 		try {
 			account = this.pluginUtils.getAccountManager().getLocalAccount(username);
-			if (account.isPresent()) {
+			if (!account.isPresent()) {
 				account = this.pluginUtils.createAccountDatabase().getAccount(username);
 			}
 			account.get().setType(type);
@@ -55,7 +55,6 @@ public class ChangePasswordOthersCallback extends BukkitRunnable implements Encr
 			
 			this.sender.sendMessage(MessagesConfig.prefix + "The account has been updated");
 		} catch (Exception exception) {
-			// TODO: Proper handling here
 			exception.printStackTrace();
 		}
 		if (sender instanceof Player) {
