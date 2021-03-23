@@ -16,14 +16,14 @@ public class MainTimer extends BukkitRunnable {
 	private List<Player> kick;
 	private List<Player> timerRemove;
 	private HashMap<Player, Integer> timer;
-	private HashMap<String, Integer> bannedIps;
+	private HashMap<String, Long> bannedIps;
 	
 	private MainConfig config;
 	
 	public MainTimer(MainConfig config) {
 		super();
 		this.kick = new ArrayList<Player>();
-		this.bannedIps = new HashMap<String, Integer>();
+		this.bannedIps = new HashMap<String, Long>();
 		this.timerRemove = new ArrayList<Player>();
 		this.timer = new HashMap<Player, Integer>();
 		
@@ -49,17 +49,12 @@ public class MainTimer extends BukkitRunnable {
 			}
 		}
 		kick.clear();
-		for (String banned : bannedIps.keySet()) { // TODO: Move this to a long-value and timestamp. Saves performance
-			bannedIps.put(banned, bannedIps.get(banned) - 1);
-			if (bannedIps.get(banned) <= 0) {
-				bannedIps.remove(banned);
-			}
-		}
 		for (Player all : timerRemove) {
 			all.kickPlayer(MessagesConfig.prefix + MessagesConfig.timer_over.replace("%Reconnect-Time%", config.getReconnectTime() + ""));
 			String ip = all.getAddress().getAddress().toString().replace("/", "");
 			if (config.isReconnectTimeEnabled()) {
-				bannedIps.put(ip, config.getReconnectTime());
+				long timestamp = System.currentTimeMillis();
+				bannedIps.put(ip, timestamp + (config.getReconnectTime() * 1000));
 			}
 			timer.remove(all);
 		}
@@ -79,15 +74,28 @@ public class MainTimer extends BukkitRunnable {
 	}
 	
 	public void addBannedIp(String ip) {
-		this.bannedIps.put(ip, config.getLoginFailedBanTime());
+		long timestamp = System.currentTimeMillis();
+		this.bannedIps.put(ip, timestamp + (config.getLoginFailedBanTime() * 1000));
 	}
 	
 	public boolean isBannedIp(String ip) {
-		return this.bannedIps.containsKey(ip);
+		if (this.bannedIps.containsKey(ip)) {
+			long oldTime = this.bannedIps.get(ip);
+			long timestamp = System.currentTimeMillis();
+			if (timestamp <= oldTime) {
+				return true;
+			}
+		}
+		return false;
 	}
 	
 	public int getRemainingbanTime(String ip) {
-		return this.bannedIps.containsKey(ip) ? this.bannedIps.get(ip) : 0;
+		if (this.bannedIps.containsKey(ip)) {
+			long oldTime = this.bannedIps.get(ip);
+			long timestamp = System.currentTimeMillis();
+			return (int) (timestamp - oldTime);
+		}
+		return 0;
 	}
 
 }
