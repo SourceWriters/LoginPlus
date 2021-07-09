@@ -40,7 +40,7 @@
 
 [![Name Screen Shot][product-screenshot]](https://example.com)
 
-There are many authentication-plugins ou there, but no one really offers secure-features directly out of the box. LoginPlus should bring your server a stable and modern alternative, that is on top secure for you and your palyers.
+There are many authentication-plugins out there, but no one really offers secure-features directly out of the box. LoginPlus should bring your server a stable and modern alternative, that is on top secure for you and your palyers.
 
 ### Built With
 * [Argon2-JVM](https://github.com/phxql/argon2-jvm)
