@@ -3,7 +3,7 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>com.syntaxphoenix.java</groupId>
   <artifactId>LoginPlus</artifactId>
-  <version>3.0.2</version>
+  <version>3.1.0</version>
   <build>
     <resources>
       <resource>
@@ -22,7 +22,7 @@
       </plugin>
       <plugin>
         <artifactId>maven-shade-plugin</artifactId>
-        <version>3.1.1</version>
+        <version>3.2.4</version>
         <executions>
           <execution>
             <phase>package</phase>
@@ -45,14 +45,6 @@
           <createDependencyReducedPom>true</createDependencyReducedPom>
           <relocations>
             <relocation>
-              <pattern>net.sourcewriters.minecraft.versionutils</pattern>
-              <shadedPattern>com.syntaxphoenix.loginplus.shaded.versionutils</shadedPattern>
-            </relocation>
-            <relocation>
-              <pattern>com.google.gson</pattern>
-              <shadedPattern>com.syntaxphoenix.loginplus.shaded.google.gson</shadedPattern>
-            </relocation>
-            <relocation>
               <pattern>de.mkammerer.argon2</pattern>
               <shadedPattern>com.syntaxphoenix.loginplus.shaded.mkammerer.argon2</shadedPattern>
             </relocation>
@@ -66,8 +58,8 @@
       <plugin>
         <artifactId>maven-compiler-plugin</artifactId>
         <configuration>
-          <source>8</source>
-          <target>8</target>
+          <source>11</source>
+          <target>11</target>
         </configuration>
       </plugin>
     </plugins>
@@ -84,26 +76,19 @@
   </repositories>
   <dependencies>
     <dependency>
-      <groupId>spigot</groupId>
-      <artifactId>server</artifactId>
-      <version>1</version>
-      <scope>system</scope>
-      <systemPath>${project.basedir}/dependencies/Spigot1.15.jar</systemPath>
-      <exclusions>
-        <exclusion>
-          <artifactId>snakeyaml</artifactId>
-          <groupId>org.yaml</groupId>
-        </exclusion>
-        <exclusion>
-          <artifactId>gson</artifactId>
-          <groupId>com.google.gson</groupId>
-        </exclusion>
-      </exclusions>
+      <groupId>net.sourcewriters.minecraft</groupId>
+      <artifactId>vcompat</artifactId>
+      <version>3.0.0</version>
+      <scope>provided</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.spigotmc</groupId>
+      <artifactId>spigot</artifactId>
+      <version>1.13.2-R0.1-SNAPSHOT</version>
+      <scope>provided</scope>
     </dependency>
   </dependencies>
   <properties>
-    <maven.compiler.source>1.8</maven.compiler.source>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-    <maven.compiler.target>1.8</maven.compiler.target>
   </properties>
 </project>
