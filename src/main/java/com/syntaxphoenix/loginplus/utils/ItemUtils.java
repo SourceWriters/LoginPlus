@@ -12,6 +12,7 @@ import org.bukkit.inventory.meta.LeatherArmorMeta;
 import org.bukkit.material.Dye;
 
 // TODO: Make ItemBuilder from this mess
+@SuppressWarnings("deprecation")
 public class ItemUtils {
 	
 	public static ItemStack ItemStackCreator(String name, String lore1, String lore2, Material m, int a) {
@@ -55,7 +56,7 @@ public class ItemUtils {
 		return i;		
 	}
 	
-	public static ItemStack DyeCreator(String name, String lore1, String lore2, int a, DyeColor c) {
+    public static ItemStack DyeCreator(String name, String lore1, String lore2, int a, DyeColor c) {
 		
 		List<String> list = new ArrayList<String>();
 		if (lore1 != null) {

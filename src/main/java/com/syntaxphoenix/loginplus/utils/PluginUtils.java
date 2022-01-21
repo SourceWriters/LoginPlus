@@ -67,19 +67,21 @@ public class PluginUtils {
 		System.out.println("                                            ");		
 		ConsoleCommandSender sender = Bukkit.getConsoleSender();
 		sender.sendMessage("§eThank you for using LoginPlus by §bSyntax§9Phoenix §7IT-Solutions");
-		
-		loadConfigs();
-		loadMysql();
-		this.accountManager = new AccountManager(this);
-		this.userHandler = new UserHandler();
-		this.encryptionManager = new EncryptionManager(config);
-		this.loginManager = new LoginManager(this);
-		this.sessionManager = new SessionManager(config);
-		loadTimer();
-		loadListener();
-		loadCommands();
-		
-		new SyntaxPhoenixStats("sw9Z6c1f", LoginPlus.getInstance());
+	}
+	
+	public void enable() {
+        loadConfigs();
+        loadMysql();
+        this.accountManager = new AccountManager(this);
+        this.userHandler = new UserHandler();
+        this.encryptionManager = new EncryptionManager(config);
+        this.loginManager = new LoginManager(this);
+        this.sessionManager = new SessionManager(config);
+        loadTimer();
+        loadListener();
+        loadCommands();
+        
+        new SyntaxPhoenixStats("sw9Z6c1f", LoginPlus.getInstance());
 	}
 	
 	public void disable() {

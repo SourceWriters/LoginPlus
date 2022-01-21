@@ -5,25 +5,31 @@ import org.bukkit.plugin.java.JavaPlugin;
 import com.syntaxphoenix.loginplus.utils.PluginUtils;
 
 public class LoginPlus extends JavaPlugin {
-	
-	private static LoginPlus instance;
-	
-	private PluginUtils pluginUtils;
-	
-	public void onEnable() {
-		instance = this;
-		this.pluginUtils = new PluginUtils();
-	}
-	
-	public void onDisable() {
-		this.pluginUtils.disable();
-	}
-	
-	public PluginUtils getPluginUtils() {
-		return this.pluginUtils;
-	}
-	
-	public static LoginPlus getInstance() {
-		return instance;
-	}
+
+    private LoginPlusApp app;
+
+    @Override
+    public void onEnable() {
+        if (app != null) {
+            return;
+        }
+        (app = new LoginPlusApp(this)).start();
+    }
+
+    @Override
+    public void onDisable() {
+        if (app == null) {
+            return;
+        }
+        app.stop();
+        app = null;
+    }
+
+    public final PluginUtils getPluginUtils() {
+        return app.getUtils();
+    }
+
+    public static LoginPlus getInstance() {
+        return LoginPlus.getPlugin(LoginPlus.class);
+    }
 }
