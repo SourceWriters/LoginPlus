@@ -3,7 +3,7 @@
 
     <groupId>com.syntaxphoenix.java</groupId>
     <artifactId>LoginPlus</artifactId>
-    <version>3.1.0</version>
+    <version>3.1.1</version>
     <packaging>jar</packaging>
 
     <repositories>
@@ -30,7 +30,7 @@
         <dependency>
             <groupId>net.sourcewriters.minecraft</groupId>
             <artifactId>vcompat-updater</artifactId>
-            <version>1.0.0</version>
+            <version>1.0.2</version>
         </dependency>
 
         <!-- Minecraft -->
