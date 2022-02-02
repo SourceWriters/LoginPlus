@@ -3,7 +3,7 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>com.syntaxphoenix.java</groupId>
   <artifactId>LoginPlus</artifactId>
-  <version>3.1.0</version>
+  <version>3.1.2</version>
   <build>
     <resources>
       <resource>
@@ -45,12 +45,8 @@
           <createDependencyReducedPom>true</createDependencyReducedPom>
           <relocations>
             <relocation>
-              <pattern>de.mkammerer.argon2</pattern>
-              <shadedPattern>com.syntaxphoenix.loginplus.shaded.mkammerer.argon2</shadedPattern>
-            </relocation>
-            <relocation>
-              <pattern>at.favre.lib.crypto.bcrypt</pattern>
-              <shadedPattern>com.syntaxphoenix.loginplus.shaded.favre.lib.crypto.bcrypt</shadedPattern>
+              <pattern>at.favre.lib</pattern>
+              <shadedPattern>com.syntaxphoenix.loginplus.shaded.favre.lib</shadedPattern>
             </relocation>
           </relocations>
         </configuration>

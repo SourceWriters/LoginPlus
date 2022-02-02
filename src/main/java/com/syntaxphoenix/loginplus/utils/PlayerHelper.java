@@ -12,7 +12,7 @@ public final class PlayerHelper {
     public static void sendTitle(Player player, int fadeIn, int stay, int fadeOut, String title, String subtitle) {
         NmsPlayer nmsPlayer = VersionCompatProvider.get().getControl().getPlayerProvider().getPlayer(player);
         nmsPlayer.setTitleTimes(fadeIn, stay, fadeOut);
-        nmsPlayer.sendTitle(subtitle);
+        nmsPlayer.sendTitle(title);
         nmsPlayer.sendSubtitle(subtitle);
     }
 
