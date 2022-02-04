@@ -32,12 +32,17 @@ public class MainConfig extends Config {
 	
 	private EncryptionType encryptionType = EncryptionType.ARGON_2;
 	private int encryptTasks;
-	
-	private int argon2Cores;
+    
 	private int argon2Memory;
 	private int argon2Parallelism;
+    private int argon2Iterations;
+    
+    private int scryptParallelism;
 	
-	private int bcryptRounds;
+	private int bcryptStrength;
+	
+	private String pdkdf2Secret;
+    private int pdkdf2Iterations;
 	
 	public MainConfig() {
 		super(new File("plugins/LoginPlus", "config.yml"));
@@ -63,7 +68,7 @@ public class MainConfig extends Config {
 		
 		titleTime = set("title.time", 5);
 		
-		encryptionType = EncryptionType.valueOf(set("encryption.type", encryptionType.toString()));
+		encryptionType = EncryptionType.fromString(set("encryption.type", encryptionType.name()));
 		encryptTasks = set("encryption.tasks", 5);
 		
 		int processors = Runtime.getRuntime().availableProcessors();
@@ -71,11 +76,16 @@ public class MainConfig extends Config {
 			processors--;
 		}
 		
-		argon2Cores = set("encryption.argon2.cores", processors / 2);
+		argon2Iterations = set("encryption.argon2.iterations", 1);
 		argon2Memory = set("encryption.argon2.memory", this.getArgon2DefaultMemory());
 		argon2Parallelism = set("encryption.argon2.parallelism", processors);
-		
-		bcryptRounds = set("encryption.bcrypt.rounds", 14);
+        
+        scryptParallelism = set("encryption.scrypt.parallelism", processors);
+        
+        pdkdf2Secret = set("encryption.pdkdf2.secret", "");
+        pdkdf2Iterations = set("encryption.pdkdf2.iterations", 185000);
+        
+		bcryptStrength = Math.min(Math.max(set("encryption.bcrypt.strength", 14), 4), 31);
 		
 		sessionsEnabled = set("sessions.enabled", false);
 		sessionTime = set("sessions.time", 300);
@@ -101,9 +111,17 @@ public class MainConfig extends Config {
 		return this.encryptTasks;
 	}
 	
-	public int getArgon2Cores() {
-		return this.argon2Cores;
-	}
+	public int getPdkdf2Iterations() {
+        return pdkdf2Iterations;
+    }
+	
+	public String getPdkdf2Secret() {
+        return pdkdf2Secret;
+    }
+	
+	public int getArgon2Iterations() {
+        return argon2Iterations;
+    }
 	
 	public int getArgon2Memory() {
 		return this.argon2Memory;
@@ -113,8 +131,12 @@ public class MainConfig extends Config {
 		return this.argon2Parallelism;
 	}
 	
-	public int getBcryptRounds() {
-		return this.bcryptRounds;
+	public int getScryptParallelism() {
+        return scryptParallelism;
+    }
+	
+	public int getBcryptStrength() {
+		return this.bcryptStrength;
 	}
 	
 	public int getLoginFailedBanTime() {

@@ -3,7 +3,7 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>com.syntaxphoenix.java</groupId>
   <artifactId>LoginPlus</artifactId>
-  <version>3.1.2</version>
+  <version>3.1.3</version>
   <build>
     <resources>
       <resource>
@@ -45,8 +45,8 @@
           <createDependencyReducedPom>true</createDependencyReducedPom>
           <relocations>
             <relocation>
-              <pattern>at.favre.lib</pattern>
-              <shadedPattern>com.syntaxphoenix.loginplus.shaded.favre.lib</shadedPattern>
+              <pattern>org.springframework</pattern>
+              <shadedPattern>com.syntaxphoenix.loginplus.shaded.springframework</shadedPattern>
             </relocation>
           </relocations>
         </configuration>

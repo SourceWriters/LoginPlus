@@ -10,28 +10,21 @@ import com.syntaxphoenix.loginplus.encryption.thread.EncryptionThread;
 public class EncryptionManager {
 	
 	private MainConfig config;
-	private EncryptionUtils encryptionUtils;
 	private int encryptActions = 0;
 	private Queue<EncryptionThread> queue;
 	
 	public EncryptionManager(MainConfig config) {
 		this.config = config;
-		this.encryptionUtils = new EncryptionUtils(
-			config.getArgon2Cores(),
-			config.getArgon2Memory(),
-			config.getArgon2Parallelism(),
-			config.getBcryptRounds()
-		);
 		this.queue = new LinkedList<EncryptionThread>();
 	}
 	
 	public void validatePassword(String password, EncryptionType type, String hash, EncryptionCallback callback) {
-		EncryptionThread thread = new EncryptionThread(this, encryptionUtils, callback, password, type, hash);
+		EncryptionThread thread = new EncryptionThread(this, callback, password, type.get(config), hash);
 		thread.start();
 	}
 	
 	public void hashPassword(String password, EncryptionType type, EncryptionCallback callback) {
-		EncryptionThread thread = new EncryptionThread(this, encryptionUtils, callback, password, type);
+		EncryptionThread thread = new EncryptionThread(this, callback, password, type.get(config));
 		thread.start();
 	}
 	
