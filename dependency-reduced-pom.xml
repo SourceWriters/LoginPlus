@@ -3,7 +3,7 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>com.syntaxphoenix.java</groupId>
   <artifactId>LoginPlus</artifactId>
-  <version>3.2.0</version>
+  <version>3.2.1</version>
   <build>
     <resources>
       <resource>
@@ -47,6 +47,10 @@
             <relocation>
               <pattern>org.springframework</pattern>
               <shadedPattern>com.syntaxphoenix.loginplus.shaded.springframework</shadedPattern>
+            </relocation>
+            <relocation>
+              <pattern>org.bouncycastle</pattern>
+              <shadedPattern>com.syntaxphoenix.loginplus.shaded.bouncycastle</shadedPattern>
             </relocation>
           </relocations>
         </configuration>

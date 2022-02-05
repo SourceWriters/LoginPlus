@@ -3,7 +3,7 @@
 
     <groupId>com.syntaxphoenix.java</groupId>
     <artifactId>LoginPlus</artifactId>
-    <version>3.2.0</version>
+    <version>3.2.1</version>
     <packaging>jar</packaging>
 
     <repositories>
@@ -46,6 +46,11 @@
             <groupId>org.springframework.security</groupId>
             <artifactId>spring-security-crypto</artifactId>
             <version>5.6.1</version>
+        </dependency>
+        <dependency>
+            <groupId>org.bouncycastle</groupId>
+            <artifactId>bcpkix-jdk15on</artifactId>
+            <version>1.70</version>
         </dependency>
     </dependencies>
 
@@ -91,6 +96,10 @@
                         <relocation>
                             <pattern>org.springframework</pattern>
                             <shadedPattern>com.syntaxphoenix.loginplus.shaded.springframework</shadedPattern>
+                        </relocation>
+                        <relocation>
+                            <pattern>org.bouncycastle</pattern>
+                            <shadedPattern>com.syntaxphoenix.loginplus.shaded.bouncycastle</shadedPattern>
                         </relocation>
                     </relocations>
                 </configuration>
